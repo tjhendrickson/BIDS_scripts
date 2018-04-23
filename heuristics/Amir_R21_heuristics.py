@@ -14,17 +14,17 @@ def infotodict(seqinfo):
     seqitem: run number during scanning
     subindex: sub index within group
     """
-    t1 = create_key('sub-{subject}/{session}/anat/sub-{subject}_run-{item:02d}_T1w')
-    t2 = create_key('sub-{subject}/{session}/anat/sub-{subject}_run-{item:02d}_T2w')
+    t1 = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_run-{item:02d}_T1w')
+    t2 = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_run-{item:02d}_T2w')
 
-    rest = create_key('sub-{subject}/{session}/func/sub-{subject}_task-rest_acq-{acq}_run-{item:02d}_bold')
-    sbref_rest = create_key('sub-{subject}/{session}/func/sub-{subject}_task-rest_acq-{acq}_run-{item:02d}_sbref')
+    rest = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-rest_acq-{acq}_run-{item:02d}_bold')
+    sbref_rest = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-rest_acq-{acq}_run-{item:02d}_sbref')
 
     dwi = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_dwi')
     sbref_dwi = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_sbref')
 
 
-    spinecho_map_bold = create_key('sub-{subject}/{session}/fmap/sub-{subject}_dir-{dir}_run-{item:02d}_epi')
+    spinecho_map_bold = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_dir-{dir}_run-{item:02d}_epi')
 
     info = {t1: [], t2: [], rest: [], spinecho_map_bold: [], sbref_rest: [], dwi: [], sbref_dwi: []}
 
