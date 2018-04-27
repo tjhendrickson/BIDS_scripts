@@ -1,3 +1,5 @@
+# STILL BEING TESTED, DO NOT USE
+
 from glob import glob
 import os
 from pydicom import read_file
