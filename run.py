@@ -1,5 +1,4 @@
 #!/home/lnpi14-raid1/timothy-data-lnpi14/nipype_python_2.7.10/bin python
-
 from glob import glob
 import os
 import shutil
@@ -7,7 +6,6 @@ import argparse
 
 
 #book keeping and global variables
-
 parser = argparse.ArgumentParser(description='Script that controls BIDS conversion for individual studies')
 parser.add_argument('--top_level_dir', help="The directory this script is being called from, it should also have the heuristics script within.")
 parser.add_argument('--output_dir', help="The directory that the BIDS data will be outputted to")
