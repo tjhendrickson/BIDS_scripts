@@ -33,7 +33,7 @@ if not os.path.exists(os.path.join(top_level_dir, output_dir)):
 if not os.path.exists(os.path.join(temp_dir, subj_id)):
 	os.makedirs(os.path.join(temp_dir, subj_id))
 
-if not os.path.exists('BIDS/' + heuristics_script):
+if not os.path.exists('BIDS/heuristics/' + heuristics_script):
 	raise EnvironmentError("Heuristics script for " + study_name + " does not exist, it must be in the top level directory: " + top_level_dir)
 
 
