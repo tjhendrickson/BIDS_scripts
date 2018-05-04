@@ -59,7 +59,7 @@ def infotodict(seqinfo):
 
 
         if (s.dim4 == 1) and ('PA' in s.protocol_name or 'AP' in s.protocol_name):
-            if '-SpinEchoFieldMap' in s.protocol_name:
+            if 'SpinEchoFieldMap' in s.protocol_name and not 'PCASL' in s.protocol_name:
                 if 'PA' in s.protocol_name or 'REV_AP' in s.protocol_name:
                     info[spinecho_map_bold].append({'item': s.series_id, 'acq': 'SE', 'dir': 'PA'})
                 else:
