@@ -14,6 +14,9 @@ parser.add_argument('--study_name', help="What is the shorthand name for this st
 parser.add_argument('--proc_id', help="5 digit proc number (AKA event ID from GRID)")
 parser.add_argument('--subj_id', help="4 digit subject number (AKA subject id from GRID)")
 parser.add_argument('--container', help="location of docker or udocker install")
+parser.add_argument('--bids_script_dir', help="Location of bids conversion scripts")
+
+
 
 
 args = parser.parse_args()
@@ -26,21 +29,23 @@ proc_id = args.proc_id
 subj_id = args.subj_id
 container = args.container
 heuristics_script = study_name + "_heuristics.py"
+bids_scripts_dir = args.bids_script_dir
 
-if not os.path.exists(os.path.join(top_level_dir, output_dir)):
-	os.makedirs(os.path.join(top_level_dir,output_dir))
+if not os.path.exists(os.path.join(top_level_dir, study_name, output_dir)):
+	os.makedirs(os.path.join(top_level_dir, study_name, output_dir))
 
 if not os.path.exists(os.path.join(temp_dir, subj_id)):
 	os.makedirs(os.path.join(temp_dir, subj_id))
 
-if not os.path.exists(os.path.join(top_level_dir, 'BIDS_scripts/heuristics/' ,heuristics_script)):
-	raise EnvironmentError("Heuristics script for " + study_name + " does not exist, it must be in the heuristics directory: " + top_level_dir +"/BIDS/heuristics")
+if not os.path.exists(os.path.join(top_level_dir, bids_scripts_dir + '/heuristics/', heuristics_script)):
+	raise EnvironmentError("Heuristics script for " + study_name + " does not exist, it must be in the heuristics directory")
 
 
 os.rename(glob("%s/PN-%s*" % (temp_dir, proc_id))[0], "%s/%s" % (temp_dir, proc_id))
 shutil.move(os.path.join(temp_dir, proc_id), (os.path.join(temp_dir, subj_id, proc_id)))
-os.system('/bin/bash -c "%s run -v %s:/home/tim -v %s/:/home/tim/data \
--v %s/BIDS_scripts/heuristics/%s:/home/tim/BIDS_scripts/heuristics/%s run_heudiconv -d /home/tim/data/{subject}/{session}/*/*.dcm -s %s \
--ss %s --overwrite -o /home/tim/%s -c dcm2niix -f /home/tim/BIDS_scripts/heuristics/%s  -b"'
-		  % (container, top_level_dir, temp_dir, top_level_dir, heuristics_script, heuristics_script, subj_id, proc_id, output_dir, heuristics_script))
+os.system('/bin/bash -c "%s run -v %s/%s:/home/tim -v %s/:/home/tim/data \
+-v %s/%s/heuristics/%s:/home/tim/BIDS_scripts/heuristics/%s run_heudiconv -d /home/tim/data/{subject}/{session}/*/*.dcm '
+          '-s %s -ss %s --overwrite -o /home/tim/%s -c dcm2niix -f /home/tim/BIDS_scripts/heuristics/%s -b"'
+		  % (container, top_level_dir, study_name, temp_dir, top_level_dir, bids_scripts_dir, 
+		     heuristics_script, heuristics_script, subj_id, proc_id, output_dir, heuristics_script))
 
