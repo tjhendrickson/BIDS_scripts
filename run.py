@@ -40,12 +40,11 @@ if not os.path.exists(os.path.join(temp_dir, subj_id)):
 if not os.path.exists(os.path.join(top_level_dir, bids_scripts_dir + '/heuristics/', heuristics_script)):
 	raise EnvironmentError("Heuristics script for " + study_name + " does not exist, it must be in the heuristics directory")
 
-
-os.rename(glob("%s/PN-%s*" % (temp_dir, proc_id))[0], "%s/%s" % (temp_dir, proc_id))
-shutil.move(os.path.join(temp_dir, proc_id), (os.path.join(temp_dir, subj_id, proc_id)))
-os.system('/bin/bash -c "%s run -v %s/%s:/home/tim -v %s/:/home/tim/data \
+if not os.path.exists(os.path.join(temp_dir, subj_id, proc_id)):
+	shutil.move(os.path.join(temp_dir, proc_id), (os.path.join(temp_dir, subj_id, proc_id)))
+os.system('/bin/bash -c "%s run -v %s/%s:/home/tim -v %s:/home/tim/data \
 -v %s/%s/heuristics/%s:/home/tim/BIDS_scripts/heuristics/%s run_heudiconv -d /home/tim/data/{subject}/{session}/*/*.dcm '
           '-s %s -ss %s --overwrite -o /home/tim/%s -c dcm2niix -f /home/tim/BIDS_scripts/heuristics/%s -b"'
-		  % (container, top_level_dir, study_name, temp_dir, top_level_dir, bids_scripts_dir, 
+		  % (container, top_level_dir, study_name, temp_dir, top_level_dir, bids_scripts_dir,
 		     heuristics_script, heuristics_script, subj_id, proc_id, output_dir, heuristics_script))
 
