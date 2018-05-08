@@ -30,6 +30,7 @@ subj_id = args.subj_id
 container = args.container
 heuristics_script = study_name + "_heuristics.py"
 bids_scripts_dir = args.bids_script_dir
+user = os.system("whoami")
 
 if not os.path.exists(os.path.join(top_level_dir, study_name, output_dir)):
 	os.makedirs(os.path.join(top_level_dir, study_name, output_dir))
@@ -42,9 +43,11 @@ if not os.path.exists(os.path.join(top_level_dir, bids_scripts_dir + '/heuristic
 
 if not os.path.exists(os.path.join(temp_dir, subj_id, proc_id)):
 	shutil.move(os.path.join(temp_dir, proc_id), (os.path.join(temp_dir, subj_id, proc_id)))
-os.system('/bin/bash -c "%s run -v %s/%s:/home/tim -v %s:/home/tim/data \
--v %s/%s/heuristics/%s:/home/tim/BIDS_scripts/heuristics/%s run_heudiconv -d /home/tim/data/{subject}/{session}/*/*.dcm '
-          '-s %s -ss %s --overwrite -o /home/tim/%s -c dcm2niix -f /home/tim/BIDS_scripts/heuristics/%s -b"'
-		  % (container, top_level_dir, study_name, temp_dir, top_level_dir, bids_scripts_dir,
-		     heuristics_script, heuristics_script, subj_id, proc_id, output_dir, heuristics_script))
+os.system('/bin/bash -c "%s run --user=%s -v %s/%s:/home/tim -v %s:%s \
+-v %s/%s/heuristics/%s:%s/%s/heuristics/%s run_heudiconv -d %s/{subject}/{session}/*/*.dcm '
+          '-s %s -ss %s --overwrite -o /home/tim/%s -c dcm2niix -f %s/%s/heuristics/%s -b"'
+		  % (container, user, top_level_dir, study_name, temp_dir, temp_dir, top_level_dir, bids_scripts_dir,
+		     heuristics_script, top_level_dir, bids_scripts_dir, heuristics_script, temp_dir,  subj_id, proc_id, output_dir,
+		     top_level_dir, bids_scripts_dir,  heuristics_script))
+#shutil.rmtree(os.path.join(temp_dir, subj_id))
 

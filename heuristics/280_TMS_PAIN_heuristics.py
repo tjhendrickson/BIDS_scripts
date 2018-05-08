@@ -20,8 +20,8 @@ def infotodict(seqinfo):
     rest = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-rest_run-{item:02d}_bold')
     sbref_rest = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-rest_run-{item:02d}_sbref')
 
-    task = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-{TaskName}_run-{item:02d}_bold')
-    sbref_task = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-{TaskName}_run-{item:02d}_sbref')
+    asl = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-{TaskName}_acq-{acq}_run-{item:02d}_bold')
+    sbref_asl = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-{TaskName}_run-{item:02d}_sbref')
 
     dwi = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_dwi')
     sbref_dwi = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_sbref')
@@ -30,9 +30,10 @@ def infotodict(seqinfo):
     spinecho_map_pcasl = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_acq-{acq}_dir-{dir}_run-{item:02d}_epi')
 
     gradecho_map_bold = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_fieldmap')
+    sbref_gradecho = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_sbref')
 
-    info = {t1: [], t2: [], rest: [], dwi: [], spinecho_map_bold: [], gradecho_map_bold: [], spinecho_map_pcasl: [],
-            sbref_rest: [], sbref_dwi: [], task: [], sbref_task: []}
+    info = {t1: [], t2: [], rest: [], dwi: [], spinecho_map_bold: [], gradecho_map_bold: [], sbref_gradecho: [],
+           spinecho_map_pcasl: [], sbref_rest: [], sbref_dwi: [], asl: [], sbref_asl: []}
 
     for idx, s in enumerate(seqinfo):
         if (s.dim3 == 208) and ('NORM' in s.image_type):
@@ -47,40 +48,37 @@ def infotodict(seqinfo):
                 acq = 'PA'
             else:
                 acq = 'AP'
-                info[dwi].append({'item': s.series_id, 'acq': acq})
+            info[dwi].append({'item': s.series_id, 'acq': acq})
         if (s.dim4 == 520) and ('REST' in s.protocol_name):
             info[rest].append({'item': s.series_id})
         if (s.dim4 == 90) and ('PCASL' in s.protocol_name):
             TaskName = "mbPCASLhr"
-            info[task].append({'item': s.series_id, 'TaskName': TaskName})
+            acq = 'PA'
+            info[asl].append({'item': s.series_id, 'TaskName': TaskName, 'acq': acq})
         if (s.dim4 == 10) and ('REST' in s.protocol_name):
             info[gradecho_map_bold].append({'item': s.series_id, 'acq': 'gradecho'})
-
-
-
         if (s.dim4 == 1) and ('PA' in s.protocol_name or 'AP' in s.protocol_name):
-            if 'SpinEchoFieldMap' in s.protocol_name and not 'PCASL' in s.protocol_name:
-                if 'PA' in s.protocol_name or 'REV_AP' in s.protocol_name:
-                    info[spinecho_map_bold].append({'item': s.series_id, 'acq': 'SE', 'dir': 'PA'})
-                else:
-                    info[spinecho_map_bold].append({'item': s.series_id, 'acq': 'SE', 'dir': 'AP'})
+            if 'SpinEchoFieldMap_AP' == s.protocol_name:
+                info[spinecho_map_bold].append({'item': s.series_id, 'acq': 'SE', 'dir': 'AP'})
+            elif 'SpinEchoFieldMap_REV_AP' == s.protocol_name:
+                info[spinecho_map_bold].append({'item': s.series_id, 'acq': 'SE', 'dir': 'PA'})
             if 'PCASL' in s.protocol_name:
                 if 'PA' in s.protocol_name or 'REV_AP' in s.protocol_name:
                     info[spinecho_map_pcasl].append({'item': s.series_id, 'acq': 'pcaslSE', 'dir': 'PA'})
                 else:
                     info[spinecho_map_pcasl].append({'item': s.series_id, 'acq': 'pcaslSE', 'dir': 'AP'})
-            if 'REST' in s.protocol_name:
-                if 'PA' in s.protocol_name or 'REV_AP' in s.protocol_name:
-                    acq = 'PA'
-                else:
-                    acq = 'AP'
+            if 'REST_AP' in s.series_id:
+                info[sbref_gradecho].append({'item': s.series_id, 'acq': 'gradecho'})
+            if 'REST_REV_PA' in s.series_id:
+                acq = 'PA'
                 info[sbref_rest].append({'item': s.series_id, 'acq': acq})
+
             if 'DWI' in s.protocol_name:
                 if 'REV_AP' in s.protocol_name:
                     acq = 'PA'
                 else:
                     acq = 'AP'
                 info[sbref_dwi].append({'item': s.series_id, 'acq': acq})
-        acq = ""
-        TaskName = ""
+        #acq = ""
+        #TaskName = ""
     return info
