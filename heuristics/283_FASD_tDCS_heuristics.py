@@ -61,7 +61,7 @@ def infotodict(seqinfo):
                 if 'AP' in s.protocol_name:
                     acq = 'eyesopenAP'
                 else:
-                    acq = 'eyesopenAP'
+                    acq = 'eyesopenPA'
                 info[sbref_rest].append({'item': s.series_id, 'acq': acq})
             if 'dMRI' in s.protocol_name:
                 if 'dir98_AP' in s.protocol_name:

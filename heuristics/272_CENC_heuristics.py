@@ -27,7 +27,7 @@ def infotodict(seqinfo):
     dwi = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_dwi')
 
     gradecho_map_bold = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_fieldmap')
-    sbref_gradecho = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_sbref')
+    sbref_gradecho = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-{acq}_run-{item:02d}_sbref')
 
     spinecho_map_bold = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_acq-{acq}_dir-{dir}_run-{item:02d}_epi')
 
@@ -58,17 +58,17 @@ def infotodict(seqinfo):
             info[rest].append({'item': s.series_id, 'acq': acq})
         if (s.dim4 == 10) and ('REST' in s.protocol_name):
             info[gradecho_map_bold].append({'item': s.series_id, 'acq': 'gradechoAP'})
-        if (s.dim4 == 315) and ('RETINOTOPY' in s.protocol_name):
-            if 'RETINOTOPY_RUN1_PA' in s.protocol_name:
+        if (s.dim4 > 1) and ('RETINOTOPY' in s.protocol_name):
+            if 'RETINOTOPY_RUN1' in s.dcm_dir_name:
                 acq = 'retinoRun1PA'
                 info[task].append({'item': s.series_id, 'acq': acq})
-            elif 'RETINOTOPY_RUN2_PA' in s.protocol_name:
+            elif 'RETINOTOPY_RUN2' in s.dcm_dir_name:
                 acq = 'retinoRun2PA'
                 info[task].append({'item': s.series_id, 'acq': acq})
-            elif 'RETINOTOPY_RUN3_PA' in s.protocol_name:
+            elif 'RETINOTOPY_RUN3' in s.dcm_dir_name:
                 acq = 'retinoRun3PA'
                 info[task].append({'item': s.series_id, 'acq': acq})
-            elif 'RETINOTOPY_RUN4_PA' in s.protocol_name:
+            elif 'RETINOTOPY_RUN4' in s.dcm_dir_name:
                 acq = 'retinoRun4PA'
                 info[task].append({'item': s.series_id, 'acq': acq})
         if (s.dim4 == 1):
