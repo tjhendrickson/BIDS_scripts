@@ -30,7 +30,7 @@ def infotodict(seqinfo):
     spinecho_map_pcasl = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_acq-{acq}_dir-{dir}_run-{item:02d}_epi')
 
     gradecho_map_bold = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_fieldmap')
-    sbref_gradecho = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_sbref')
+    sbref_gradecho = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-{acq}_run-{item:02d}_sbref')
 
     info = {t1: [], t2: [], rest: [], dwi: [], spinecho_map_bold: [], gradecho_map_bold: [], sbref_gradecho: [],
            spinecho_map_pcasl: [], sbref_rest: [], sbref_dwi: [], asl: [], sbref_asl: []}
