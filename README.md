@@ -8,15 +8,27 @@ Use "run_single.py" when you are testing whether the BIDS conversion work on you
 
 ### Usage
 
-The primary script to be run are either run_single.py / run_batch.py, which has the following command line arguments: 
+usage: run_single.py [-h] [--top_level_dir TOP_LEVEL_DIR]
+                     [--temp_dir TEMP_DIR] [--study_name STUDY_NAME]
+                     [--proc_id PROC_ID] [--subj_id SUBJ_ID]
+                     [--container CONTAINER]
 
-[run_single.py / run_batch.py] [-h / --help ]
-					       [ --top_level_dir ]
-					       [ --temp_dir ]
-					       [ --study_name ]
-					       [ --proc_id ]
-					       [ --subj_id ]
-					       [ --container ]
+Script that controls BIDS conversion for individual studies
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --top_level_dir TOP_LEVEL_DIR
+                        The directory this script is being called from, it
+                        should also have the heuristics script within.
+  --temp_dir TEMP_DIR   The directory that will temporarily house dicom
+                        directories.
+  --study_name STUDY_NAME
+                        What is the shorthand name for this study?
+  --proc_id PROC_ID     5 digit proc number (AKA event ID from GRID)
+  --subj_id SUBJ_ID     4 digit subject number (AKA subject id from GRID)
+  --container CONTAINER
+                        location of docker or udocker install
+
 					       
 If running via udocker, the first time the script runs it will automatically generate container based on the nipy/heudiconv docker image. In order to avoid this create the container ahead of time by typing: 
 
