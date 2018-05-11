@@ -7,13 +7,12 @@ Within the heuristics directory are various heuristics scripts that have been us
 Use "run_single.py" when you are testing whether the BIDS conversion work on your data set, but use "run_batch.py" when you get to the point of batching it. "run_batch.py" will automatically delete data within the temporary directory once conversion for that data set has completed.
 
 ### Usage
-
-# usage: run_single.py [-h] [--top_level_dir TOP_LEVEL_DIR]
+#
+usage: run_single.py [-h] [--top_level_dir TOP_LEVEL_DIR]
                      [--temp_dir TEMP_DIR] [--study_name STUDY_NAME]
                      [--proc_id PROC_ID] [--subj_id SUBJ_ID]
                      [--container CONTAINER]
-
-# Script that controls BIDS conversion for individual studies
+ Script that controls BIDS conversion for individual studies
 
 optional arguments:
   -h, --help            show this help message and exit
