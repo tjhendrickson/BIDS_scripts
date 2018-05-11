@@ -34,7 +34,7 @@ optional arguments:
   
   --container CONTAINER
                         location of docker or udocker install
-					       
+#					       
 If running via udocker, the first time the script runs it will automatically generate container based on the nipy/heudiconv docker image. In order to avoid this create the container ahead of time by typing: 
 
 path/to/udocker create --name=run_heudiconv nipy/heudiconv
