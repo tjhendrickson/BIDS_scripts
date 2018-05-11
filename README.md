@@ -8,7 +8,7 @@ Use "run_single.py" when you are testing whether the BIDS conversion work on you
 
 ### Usage
 This script has the following command line arguments:
-#
+```
 usage: run_single.py [-h] [--top_level_dir TOP_LEVEL_DIR]
                      [--temp_dir TEMP_DIR] [--study_name STUDY_NAME]
                      [--proc_id PROC_ID] [--subj_id SUBJ_ID]
@@ -34,7 +34,7 @@ optional arguments:
   
   --container CONTAINER
                         location of docker or udocker install
-#					       
+```					       
 If running via udocker, the first time the script runs it will automatically generate container based on the nipy/heudiconv docker image. In order to avoid this create the container ahead of time by typing: 
 
 path/to/udocker create --name=run_heudiconv nipy/heudiconv
