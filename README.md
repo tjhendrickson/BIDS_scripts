@@ -17,15 +17,21 @@ Script that controls BIDS conversion for individual studies
 
 optional arguments:
   -h, --help            show this help message and exit
+  
   --top_level_dir TOP_LEVEL_DIR
                         The directory this script is being called from, it
                         should also have the heuristics script within.
+			
   --temp_dir TEMP_DIR   The directory that will temporarily house dicom
                         directories.
+			
   --study_name STUDY_NAME
                         What is the shorthand name for this study?
-  --proc_id PROC_ID     5 digit proc number (AKA event ID from GRID)
-  --subj_id SUBJ_ID     4 digit subject number (AKA subject id from GRID)
+			
+  --proc_id PROC_ID     proc number (AKA session number)
+  
+  --subj_id SUBJ_ID     subject number 
+  
   --container CONTAINER
                         location of docker or udocker install
 
