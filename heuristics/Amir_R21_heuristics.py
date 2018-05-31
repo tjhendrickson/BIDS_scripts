@@ -31,7 +31,7 @@ def infotodict(seqinfo):
     for idx, s in enumerate(seqinfo):
         if (s.dim3 == 208):
             if 'NORM' in s.image_type:
-                if 'T1w_MPR' in s.protocol_name:
+                if 'T1w_MPR' in s.protocol_name or 'Sag_0p8mmiso_AAT1_tfl_dkd_brp_NII' in s.protocol_name:
                     info[t1].append({'item': s.series_id})
                 else:
                     info[t2].append({'item': s.series_id})

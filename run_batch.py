@@ -59,5 +59,3 @@ os.system('/bin/bash -c "%s run -v %s/%s:/home/tim -v %s:%s \
 		     heuristics_script, top_level_dir, bids_scripts_dir, heuristics_script, temp_dir,  subj_id, proc_id, output_dir,
 		     top_level_dir, bids_scripts_dir,  heuristics_script))
 shutil.rmtree(os.path.join(temp_dir, subj_id))
-shutil.rmtree(os.path.join(temp_dir, proc_id))
-
