@@ -3,51 +3,40 @@ from glob import glob
 import os
 import shutil
 import argparse
+import subprocess
+
+#run heudiconv startup script
+os.system("/neurodocker/startup.sh")
 
 
 #book keeping and global variables
 parser = argparse.ArgumentParser(description='Script that controls BIDS conversion for individual studies')
-parser.add_argument('--top_level_dir', help="The directory this script is being called from, it should also have the heuristics script within.")
 parser.add_argument('--output_dir', help="The directory that the BIDS data will be outputted to")
 parser.add_argument('--temp_dir', help='The directory that will temporarily house dicom directories.')
 parser.add_argument('--study_name', help="What is the shorthand name for this study?")
-parser.add_argument('--proc_id', help="5 digit proc number (AKA event ID from GRID)")
-parser.add_argument('--subj_id', help="4 digit subject number (AKA subject id from GRID)")
-parser.add_argument('--container', help="location of docker or udocker install")
-parser.add_argument('--bids_script_dir', help="Location of bids conversion scripts")
-
-
-
+parser.add_argument('--proc_id', help="scanning session id")
+parser.add_argument('--subj_id', help="subject id")
 
 args = parser.parse_args()
 
-top_level_dir = args.top_level_dir
 output_dir = args.output_dir
 temp_dir = args.temp_dir
 study_name = args.study_name
 proc_id = args.proc_id
 subj_id = args.subj_id
-container = args.container
-heuristics_script = study_name + "_heuristics.py"
-bids_scripts_dir = args.bids_script_dir
-user = os.system("whoami")
 
-if not os.path.exists(os.path.join(top_level_dir, study_name, output_dir)):
-	os.makedirs(os.path.join(top_level_dir, study_name, output_dir))
+heuristics_script = study_name + "_heuristics.py"
+
+if not os.path.exists(os.path.join(output_dir, "BIDS_output")):
+	os.makedirs(os.path.join(output_dir, "BIDS_output"))
 
 if not os.path.exists(os.path.join(temp_dir, subj_id)):
 	os.makedirs(os.path.join(temp_dir, subj_id))
 
-if not os.path.exists(os.path.join(top_level_dir, bids_scripts_dir + '/heuristics/', heuristics_script)):
-	raise EnvironmentError("Heuristics script for " + study_name + " does not exist, it must be in the heuristics directory")
-
 if not os.path.exists(os.path.join(temp_dir, subj_id, proc_id)):
 	shutil.move(os.path.join(temp_dir, proc_id), (os.path.join(temp_dir, subj_id, proc_id)))
-os.system('/bin/bash -c "%s run --user=%s -v %s/%s:/home/tim -v %s:%s \
--v %s/%s/heuristics/%s:%s/%s/heuristics/%s run_heudiconv -d %s/{subject}/{session}/*/*.dcm '
-          '-s %s -ss %s --overwrite -o /home/tim/%s -c dcm2niix -f %s/%s/heuristics/%s -b"'
-		  % (container, user, top_level_dir, study_name, temp_dir, temp_dir, top_level_dir, bids_scripts_dir,
-		     heuristics_script, top_level_dir, bids_scripts_dir, heuristics_script, temp_dir,  subj_id, proc_id, output_dir,
-		     top_level_dir, bids_scripts_dir,  heuristics_script))
+
+os.system('heudiconv -d %s/{subject}/{session}/*/*.dcm -s %s -ss %s --overwrite -o %s -c dcm2niix -f /heuristics/%s -b"'
+		  % (temp_dir,  subj_id, proc_id, output_dir, heuristics_script))
 shutil.rmtree(os.path.join(temp_dir, subj_id))
 
