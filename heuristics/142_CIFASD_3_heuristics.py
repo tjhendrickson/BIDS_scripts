@@ -16,9 +16,9 @@ def infotodict(seqinfo):
     """
     t1 = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_acq-{acq}_T1w')
     t2 = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_T2w')
-    dwi = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_dwi')
-
-    info = {t1: [], t2: [], dwi: []}
+    dwi = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_acq-{acq}_dwi')
+    fmaps = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_acq-{acq}_dir-{dir}_epi')
+    info = {t1: [], t2: [], dwi: [], fmaps: []}
 
     for idx, s in enumerate(seqinfo):
         if (s.dim3 == 192) and ('MPRAGE' in s.dcm_dir_name):
@@ -30,9 +30,11 @@ def infotodict(seqinfo):
                 acq = 'DTI'
                 info[dwi].append({'item': s.series_id, 'acq': acq})
         if (s.dim3 == 340) and ('DTI_AP' in s.dcm_dir_name):
-                acq = 'DTIap'
-                info[dwi].append({'item': s.series_id, 'acq': acq})
+                acq = 'DTI'
+                direction = 'AP'
+                info[dwi].append({'item': s.series_id, 'acq': acq, 'dir': direction})
         if (s.dim3 == 68) and ('DTI_PA' in s.dcm_dir_name):
-                acq = 'DTIpa'
-                info[dwi].append({'item': s.series_id, 'acq': acq})
+            acq = 'DTI'
+            direction = 'PA'
+            info[dwi].append({'item': s.series_id, 'acq': acq, 'dir': direction})
     return info
