@@ -1,4 +1,5 @@
-#!/home/lnpi14-raid1/timothy-data-lnpi14/nipype_python_2.7.10/bin python
+#!/usr/bin/python
+
 from glob import glob
 import os
 import shutil
