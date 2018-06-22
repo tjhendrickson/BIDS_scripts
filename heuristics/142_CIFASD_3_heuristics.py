@@ -17,7 +17,7 @@ def infotodict(seqinfo):
     t1 = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_acq-{acq}_T1w')
     t2 = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_T2w')
     dwi = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_acq-{acq}_dwi')
-    fmaps = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_acq-{acq}_dir-{dir}_epi')
+    fmaps = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_acq-{acq}_dir-{dir}_epi')
     info = {t1: [], t2: [], dwi: [], fmaps: []}
 
     for idx, s in enumerate(seqinfo):
