@@ -26,7 +26,7 @@ def infotodict(seqinfo):
             info[t1].append({'item': s.series_id, 'acq': acq})
         if (s.dim3 == 176) and ('T2W' in s.dcm_dir_name):
             info[t2].append({'item': s.series_id})
-        if (s.dim3 == 31) and ('DTI' in s.dcm_dir_name):
+        if (s.dim4 == 31) and ('DTI' in s.dcm_dir_name):
                 acq = 'DTI'
                 info[dwi].append({'item': s.series_id, 'acq': acq})
         if (s.dim3 == 340) and ('DTI_AP' in s.dcm_dir_name):
