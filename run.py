@@ -6,10 +6,6 @@ import shutil
 import argparse
 import subprocess
 
-#run heudiconv startup script
-os.system("/neurodocker/startup.sh")
-
-
 #book keeping and global variables
 parser = argparse.ArgumentParser(description='Script that controls BIDS conversion for individual studies')
 parser.add_argument('--output_dir', help="The directory that the BIDS data will be outputted to")
@@ -37,7 +33,7 @@ if not os.path.exists(os.path.join(temp_dir, subj_id)):
 if not os.path.exists(os.path.join(temp_dir, subj_id, proc_id)):
 	shutil.move(os.path.join(temp_dir, proc_id), (os.path.join(temp_dir, subj_id, proc_id)))
 
-os.system('heudiconv -d %s/{subject}/{session}/*/*.dcm -s %s -ss %s --overwrite -o %s -c dcm2niix -f /heuristics/%s -b"'
+os.system('/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/*/*.dcm -s %s -ss %s --overwrite -o %s -c dcm2niix -f /heuristics/%s -b"'
 		  % (temp_dir,  subj_id, proc_id, output_dir, heuristics_script))
 shutil.rmtree(os.path.join(temp_dir, subj_id))
 
