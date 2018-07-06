@@ -6,38 +6,82 @@ Within the heuristics directory are various heuristics scripts that have been us
 
 Use "run_single.py" when you are testing whether the BIDS conversion work on your data set, but use "run_batch.py" when you get to the point of batching it. "run_batch.py" will automatically delete data within the temporary directory once conversion for that data set has completed.
 
-### Usage
+### Docker Usage
 This script has the following command line arguments:
 ```
-usage: run_single.py [-h] [--top_level_dir TOP_LEVEL_DIR]
-                     [--temp_dir TEMP_DIR] [--study_name STUDY_NAME]
-                     [--proc_id PROC_ID] [--subj_id SUBJ_ID]
-                     [--container CONTAINER]
- Script that controls BIDS conversion for individual studies
+docker run -it --rm tjhendrickson/bidshcppipeline_status:v0.2 --help
+usage: run.py [-h] [--output_dir OUTPUT_DIR] [--temp_dir TEMP_DIR]
+              [--study_name STUDY_NAME] [--proc_id PROC_ID]
+              [--subj_id SUBJ_ID]
+
+Script that controls BIDS conversion for individual studies
 
 optional arguments:
   -h, --help            show this help message and exit
-  
-  --top_level_dir TOP_LEVEL_DIR
-                        The directory this script is being called from, it
-                        should also have the heuristics script within.
-			
+  --output_dir OUTPUT_DIR
+                        The directory that the BIDS data will be outputted to
   --temp_dir TEMP_DIR   The directory that will temporarily house dicom
                         directories.
-			
   --study_name STUDY_NAME
                         What is the shorthand name for this study?
-			
-  --proc_id PROC_ID     proc number (AKA session number)
-  
-  --subj_id SUBJ_ID     subject number 
-  
-  --container CONTAINER
-                        location of docker or udocker install
-```					       
-If running via udocker, the first time the script runs it will automatically generate container based on the nipy/heudiconv docker image. In order to avoid this create the container ahead of time by typing: 
+  --proc_id PROC_ID     scanning session id
+  --subj_id SUBJ_ID     subject id
+```
 
-path/to/udocker create --name=run_heudiconv nipy/heudiconv
+To run a single participant:
+
+```
+docker run -it --rm -v /home/timothy/sandbox_DO_NOT_DELETE/BIDS/142_CIFASD_4:/output_dir \
+-v /path/to/temp/data/dir:/tmp_dir \
+tjhendrickson/bidshcppipeline_status:v0.2 \
+--output_dir /output_dir --temp_dir /tmp_dir --study_name 142_CIFASD_4 --proc_id 10000 --subj_id 1000
+```
+
+### Docker to Singularity Image Conversion
+
+To convert docker image to singularity you will need:
+1) A system with docker 
+2) The docker image on that system (i.e. 'docker pull name/of/docker/image')
+3) The docker image docker2singularity on that system ('docker pull docker2singularity')
+
+And the command: 
+```
+  docker run --privileged -ti --rm  \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      -v /path/to/singularity/images/directory:/output \
+      singularityware/docker2singularity \
+      name/of/docker/image
+```
+
+### Singularity Usage
+```
+singularity run /path/to/singularity/images/directory/imagename.img --help
+usage: run.py [-h] [--output_dir OUTPUT_DIR] [--temp_dir TEMP_DIR]
+              [--study_name STUDY_NAME] [--proc_id PROC_ID]
+              [--subj_id SUBJ_ID]
+
+Script that controls BIDS conversion for individual studies
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --output_dir OUTPUT_DIR
+                        The directory that the BIDS data will be outputted to
+  --temp_dir TEMP_DIR   The directory that will temporarily house dicom
+                        directories.
+  --study_name STUDY_NAME
+                        What is the shorthand name for this study?
+  --proc_id PROC_ID     scanning session id
+  --subj_id SUBJ_ID     subject id
+```
+
+To run a single participant:
+
+```
+singularity run -B /home/timothy/sandbox_DO_NOT_DELETE/BIDS/142_CIFASD_4:/output_dir \
+-B /path/to/temp/data/dir:/tmp_dir \
+/path/to/singularity/images/directory/imagename.img \
+--output_dir /output_dir --temp_dir /tmp_dir --study_name 142_CIFASD_4 --proc_id 10000 --subj_id 1000
+```
 
 
 
