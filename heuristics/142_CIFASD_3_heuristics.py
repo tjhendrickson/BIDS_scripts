@@ -32,9 +32,9 @@ def infotodict(seqinfo):
         if (s.dim3 == 340) and ('DTI_AP' in s.dcm_dir_name):
                 acq = 'DTI'
                 direction = 'AP'
-                info[dwi].append({'item': s.series_id, 'acq': acq, 'dir': direction})
+                info[fmaps].append({'item': s.series_id, 'acq': acq, 'dir': direction})
         if (s.dim3 == 68) and ('DTI_PA' in s.dcm_dir_name):
             acq = 'DTI'
             direction = 'PA'
-            info[dwi].append({'item': s.series_id, 'acq': acq, 'dir': direction})
+            info[fmaps].append({'item': s.series_id, 'acq': acq, 'dir': direction})
     return info
