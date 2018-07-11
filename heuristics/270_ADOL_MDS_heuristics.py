@@ -41,7 +41,7 @@ def infotodict(seqinfo):
             info[dwi].append({'item': s.series_id, 'acq': 'AP'})
         if (s.dim4 == 159) and ('DWI_79dir_b1000_2000_PA' in s.protocol_name):
             info[dwi].append({'item': s.series_id, 'acq': 'PA'})
-        if (s.dim4 == 820):
+        if (s.dim4 == 912):
             info[rest].append({'item': s.series_id, 'acq': 'REST_PA'})
         if (s.dim4 == 494) and (('HARIRI_PA' in s.protocol_name)):
             info[task].append({'item': s.series_id, 'acq': 'HARIRI_PA'})
