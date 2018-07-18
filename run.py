@@ -1,10 +1,10 @@
-#!/usr/bin/python
+#.74 !/usr/bin/python
 
 from glob import glob
 import os
 import shutil
 import argparse
-import subprocess
+from IntendedFor import setup
 
 #book keeping and global variables
 parser = argparse.ArgumentParser(description='Script that controls BIDS conversion for individual studies')
@@ -35,3 +35,6 @@ if not os.path.exists(os.path.join(temp_dir, subj_id, proc_id)):
 
 os.system('/neurodocker/startup.sh heudiconv "-d %s/{subject}/{session}/*/*.dcm -s %s -ss %s --overwrite -o %s/BIDS_output -c dcm2niix -f /heuristics/%s -b" '
 		  % (temp_dir,  subj_id, proc_id, output_dir, heuristics_script))
+
+#now change IntendedFor field within fmaps
+setup(os.path.join(output_dir, "BIDS_output", "sub-"+subj_id))
