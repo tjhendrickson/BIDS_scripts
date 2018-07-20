@@ -25,8 +25,6 @@ study_name = args.study_name
 proc_id = args.proc_id
 subj_id = args.subj_id
 
-pdb.set_trace()
-
 if args.heuristic == None:
 	heuristics_script = "/heuristics/" + study_name + "_heuristics.py"
 	if not os.path.exists(heuristics_script):
