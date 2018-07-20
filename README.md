@@ -4,6 +4,13 @@
 These scripts will convert raw DICOM data set to BIDS format. The run.py script is designed to run the
  conversion of a data set in a parallelizable way.Within the heuristics directory are various heuristics scripts that
   have been used to convert data from DICOM to NIFTI. This may be helpful to build your own heuristics script.
+  
+
+### Container Hosting
+While this app is maintained on both dockerhub and singularityhub the primary hosting is through singularity hub [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/1306). To build singularity container on your local system type:
+```
+sudo singularity build bids_scripts.simg shub://tjhendrickson/bids_scripts:latest
+```
 
 ### Docker Usage
 This script has the following command line arguments:
