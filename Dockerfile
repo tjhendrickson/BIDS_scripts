@@ -29,9 +29,11 @@ ENV PYTHONPATH=""
 
 COPY run.py /run.py
 COPY heuristics /heuristics
+COPY IntendedFor.py /IntendedFor.py
 
 #make /bids_dir and /output_dir
 RUN mkdir /output_dir && \
-    mkdir /tmp_dir
+    mkdir /tmp_dir && \
+    touch /heuristic.py
 
 ENTRYPOINT ["/run.py"]
