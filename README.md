@@ -7,9 +7,9 @@ These scripts will convert raw DICOM data set to BIDS format. The run.py script 
   
 
 ### Container Hosting
-While this app is maintained on both dockerhub and singularityhub the primary hosting is through singularity hub [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/1306). To build singularity container on your local system type:
+While this app is maintained on both dockerhub and singularityhub the primary hosting is through singularity hub [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/1306). To get the most recent singularity container on your local system type:
 ```
-sudo singularity build bids_scripts.simg shub://tjhendrickson/bids_scripts:latest
+singularity pull shub://tjhendrickson/bids_scripts:latest
 ```
 
 ### Docker Usage
