@@ -1,7 +1,7 @@
 ## BIDS Conversion Scripts
 
 ### Description
-These scripts will convert raw DICOM data set to [BIDS](http://bids.neuroimaging.io/format). Within the heuristics directory are various heuristics scripts that have been used to convert data from DICOM to BIDS. This may be helpful to build your own heuristics script.
+These scripts will convert raw DICOM data set to [BIDS](http://bids.neuroimaging.io/format). Within the heuristics directory are various heuristics scripts that have been used to convert data from DICOM to BIDS. This may be helpful to build your own heuristics script. For additional information on how to create a heuristic script see the [heudiconv](https://github.com/nipy/heudiconv) github page.
   
 
 ### Container Hosting
