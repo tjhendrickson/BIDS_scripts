@@ -1,9 +1,7 @@
 ## BIDS Conversion Scripts
 
 ### Description
-These scripts will convert raw DICOM data set to BIDS format. The run.py script is designed to run the
- conversion of a data set in a parallelizable way.Within the heuristics directory are various heuristics scripts that
-  have been used to convert data from DICOM to NIFTI. This may be helpful to build your own heuristics script.
+These scripts will convert raw DICOM data set to [BIDS](http://bids.neuroimaging.io/format). Within the heuristics directory are various heuristics scripts that have been used to convert data from DICOM to BIDS. This may be helpful to build your own heuristics script.
   
 
 ### Container Hosting
