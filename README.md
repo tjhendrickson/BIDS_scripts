@@ -51,11 +51,11 @@ singularity run -B /home/timothy/sandbox_DO_NOT_DELETE/BIDS/142_CIFASD_4:/output
 --proc_id 10000 --subj_id 1000 --heuristic /heuristic.py
 ```
 
-## Import Gotchas
+## Important Gotchas
 
 **1) Bind Mounting**
 
-In order to run this container you will have to use "bind mounting", meaning you will have to link local folders/files to existing folders/files within the container with the -B flag. In the example above the folder "/home/timothy/sandbos_DO_NOT_DELETE/BIDS/142_CIFASD_4" becomes "/output_dir" as they are separated by a colon (:). **Notice that in both cases below the output and temporary folder and heuristic file are bound to /output_dir, /temp_dir and /heuristic.py, this is very important.**
+In order to run this container you will have to use "bind mounting", meaning you will have to link local folders/files to existing folders/files within the container with the -B flag. In the example above the local folder "/home/timothy/sandbos_DO_NOT_DELETE/BIDS/142_CIFASD_4" becomes "/output_dir" within the container as they are separated by a colon (:). **Notice that in both cases above the output and temporary folder and heuristic file are bound to /output_dir, /temp_dir and /heuristic.py respectively, this is very important.**
 
 **2) Folder Deletion within Temporary Folder**
 
@@ -66,9 +66,12 @@ This container **does not** handle folder deletion of the temporary dicom data, 
 The DICOM data should be formatted in the following format:
 ```
 	temp_dir:
-		subj_id:
-			proc_id:
+		proc_id:
 				DICOM data
 ```
-Where temp_dir refers to argument of --temp_dir (/tmp_dir), subj_id to --subj_id, and proc_id to --proc_id.
+Where temp_dir refers to argument of --temp_dir (/tmp_dir), and proc_id to --proc_id. 
+
+**4) Subject ID and Session ID names**
+
+You must use alphanumerics (i.e. letters or numbers) only (**no special characters**) with your subject IDs (subj_id) and session IDs (proc_id). 
 
