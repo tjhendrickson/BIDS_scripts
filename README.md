@@ -2,12 +2,13 @@
 
 ### Description
 These scripts will convert raw DICOM data set to [BIDS](http://bids.neuroimaging.io/format). Within the heuristics directory are various heuristics scripts that have been used to convert data from DICOM to BIDS. This may be helpful to build your own heuristics script. For additional information on how to create a heuristic script see the [heudiconv](https://github.com/nipy/heudiconv) github page.
-  
+
 
 ### Container Hosting
-This app is maintained on singularityhub [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/1306). To get the most recent singularity container on your local system type:
+This app is maintained on singularityhub [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/1306).You can get the most recent container several different ways below:
 ```
-singularity pull --name=name/of/singularity/image.img shub://tjhendrickson/bids_scripts:latest
+singularity pull shub://tjhendrickson/BIDS_scripts
+singularity pull --name customname.img shub://tjhendrickson/BIDS_scripts
 ```
 
 ### Singularity Usage
@@ -38,8 +39,8 @@ To run a single participant without heuristic argument:
 ```
 singularity run -B /home/timothy/sandbox_DO_NOT_DELETE/BIDS/142_CIFASD_4:/output_dir \
 -B /path/to/temp/data/dir:/tmp_dir /path/to/singularity/images/directory/imagename.img \
---output_dir /output_dir --temp_dir /tmp_dir --study_name 142_CIFASD_4 
---proc_id 10000 --subj_id 1000 
+--output_dir /output_dir --temp_dir /tmp_dir --study_name 142_CIFASD_4
+--proc_id 10000 --subj_id 1000
 ```
 
 To run a single participant with heuristic argument:
@@ -47,7 +48,7 @@ To run a single participant with heuristic argument:
 singularity run -B /home/timothy/sandbox_DO_NOT_DELETE/BIDS/142_CIFASD_4:/output_dir \
 -B /path/to/temp/data/dir:/tmp_dir -B /path/to/heuristics/script:/heuristic.py \
 /path/to/singularity/images/directory/imagename.img \
---output_dir /output_dir --temp_dir /tmp_dir --study_name 142_CIFASD_4 
+--output_dir /output_dir --temp_dir /tmp_dir --study_name 142_CIFASD_4
 --proc_id 10000 --subj_id 1000 --heuristic /heuristic.py
 ```
 
@@ -69,9 +70,9 @@ The DICOM data should be formatted in the following format:
 		proc_id:
 				DICOM data
 ```
-Where temp_dir refers to argument of --temp_dir (/tmp_dir), and proc_id to --proc_id. 
+Where temp_dir refers to argument of --temp_dir (/tmp_dir), and proc_id to --proc_id.
 
 **4) Subject ID and Session ID names**
 
-You must use alphanumerics (i.e. letters or numbers) only (**no special characters**) with your subject IDs (subj_id) and session IDs (proc_id). 
+You must use alphanumerics (i.e. letters or numbers) only (**no special characters**) with your subject IDs (subj_id) and session IDs (proc_id).
 
