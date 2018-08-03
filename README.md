@@ -52,7 +52,9 @@ singularity run -B /home/timothy/sandbox_DO_NOT_DELETE/BIDS/142_CIFASD_4:/output
 --proc_id 10000 --subj_id 1000 --heuristic /heuristic.py
 ```
 
-## Important Gotchas
+## Important Notes
+
+### Gotchas
 
 **1) Bind Mounting**
 
@@ -75,4 +77,14 @@ Where temp_dir refers to argument of --temp_dir (/tmp_dir), and proc_id to --pro
 **4) Subject ID and Session ID names**
 
 You must use alphanumerics (i.e. letters or numbers) only (**no special characters**) with your subject IDs (subj_id) and session IDs (proc_id).
+
+### Best Practices
+
+**1) Initial Conversion**
+
+While testing the initial BIDS conversion it is best to do one or two to start.
+
+**2) BIDS Validator**
+
+Once satisfied with an initial conversion, prior to running the convesion on an entire study first ensure that the BIDS converted dataset meets the BIDS specification by using the [BIDS validator web version](http://incf.github.io/bids-validator/)
 
