@@ -16,7 +16,7 @@ parser.add_argument('--proc_id', help="scanning session id")
 parser.add_argument('--subj_id', help="subject id")
 parser.add_argument('--heuristic', help="Path to heuristic file, if the file is already within the container (i.e. within heuristics folder)"
 										" you do not have to specify a path. ")
-parser.add_argument('--convert_init', help="First time conversion. A dicominfo_*.tsv file will generate within .heudiconv/'subj_id'/info directory,
+parser.add_argument('--dry_run', help="Dry run. A dicominfo_*.tsv file will generate within .heudiconv/'subj_id'/info directory,
                     ' which can be used to create heuristic script')
 
 args = parser.parse_args()
@@ -45,7 +45,7 @@ if not os.path.exists(os.path.join(temp_dir, subj_id)):
 if not os.path.exists(os.path.join(temp_dir, subj_id, proc_id)):
 	shutil.move(os.path.join(temp_dir, proc_id), (os.path.join(temp_dir, subj_id, proc_id)))
 
-if args.convert_init:
+if args.dry_run:
     os.system('/neurodocker/startup.sh heudiconv '
 		  '"-d %s/{subject}/{session}/*/* -s %s -ss %s --overwrite -o %s/BIDS_output -c none -f convertall" '
 		  % (temp_dir,  subj_id, proc_id, output_dir, heuristics_script))
