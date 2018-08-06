@@ -16,7 +16,7 @@ singularity pull --name customname.img shub://tjhendrickson/BIDS_scripts
 singularity run /path/to/singularity/images/directory/imagename.img --help
 usage: [-h] [--output_dir OUTPUT_DIR] [--temp_dir TEMP_DIR]
               [--study_name STUDY_NAME] [--proc_id PROC_ID]
-              [--subj_id SUBJ_ID] [--heuristic HEURISTIC]
+              [--subj_id SUBJ_ID] [--heuristic HEURISTIC] [--dry_run]
 
 Script that controls BIDS conversion for individual studies
 
@@ -32,24 +32,37 @@ arguments, command separated by "[ ]" are optional:
   --subj_id SUBJ_ID     subject id
   [--heuristic HEURISTIC]
                         Path to heuristic file, if the file is already within
-                        the container you do not have to specify a path.
+                        the container (i.e. within heuristics folder) you do
+                        not have to specify a path.
+  [--dry_run]             Dry run. A dicominfo_*.tsv file will generate within
+                        .heudiconv/'subj_id'/info directory which can be used
+                        to create heuristic script
+
 ```
 
 To run a single participant without heuristic argument:
 ```
 singularity run -B /home/timothy/sandbox_DO_NOT_DELETE/BIDS/142_CIFASD_4:/output_dir \
--B /path/to/temp/data/dir:/tmp_dir /path/to/singularity/images/directory/imagename.img \
---output_dir /output_dir --temp_dir /tmp_dir --study_name 142_CIFASD_4
+-B /path/to/temp/data/dir:/temp_dir /path/to/singularity/images/directory/imagename.img \
+--output_dir /output_dir --temp_dir /temp_dir --study_name 142_CIFASD_4
 --proc_id 10000 --subj_id 1000
 ```
 
 To run a single participant with heuristic argument:
 ```
 singularity run -B /home/timothy/sandbox_DO_NOT_DELETE/BIDS/142_CIFASD_4:/output_dir \
--B /path/to/temp/data/dir:/tmp_dir -B /path/to/heuristics/script:/heuristic.py \
+-B /path/to/temp/data/dir:/temp_dir -B /path/to/heuristics/script:/heuristic.py \
 /path/to/singularity/images/directory/imagename.img \
---output_dir /output_dir --temp_dir /tmp_dir --study_name 142_CIFASD_4
+--output_dir /output_dir --temp_dir /temp_dir --study_name 142_CIFASD_4
 --proc_id 10000 --subj_id 1000 --heuristic /heuristic.py
+```
+
+To run a single participant with dry_run argument:
+```
+singularity run -B /home/timothy/sandbox_DO_NOT_DELETE/BIDS/142_CIFASD_4:/output_dir \
+-B /path/to/temp/data/dir:/temp_dir /path/to/singularity/images/directory/imagename.img \
+--output_dir /output_dir --temp_dir /tmp_dir --study_name 142_CIFASD_4
+--proc_id 10000 --subj_id 1000 --dry_run
 ```
 
 ## Important Notes
@@ -82,9 +95,11 @@ You must use alphanumerics (i.e. letters or numbers) only (**no special characte
 
 **1) Initial Conversion**
 
-While testing the initial BIDS conversion it is best to do one or two to start.
+While testing the initial BIDS conversion it is best to start with one or two datasets and specify the '--dry_run' argument (see above for an example of usage). 
+This will create a dicom_info tsv file which can be used for heuristic script creation. 
+See Step 3 of 'Run HeuDiConv on ses-001 scans to get the dicominfo file' within [Stanford BIDS Tutorial](http://reproducibility.stanford.edu/bids-tutorial-series-part-2a/#heuman2).
 
 **2) BIDS Validator**
 
-Once satisfied with an initial conversion, prior to running the convesion on an entire study first ensure that the BIDS converted dataset meets the BIDS specification by using the [BIDS validator web version](http://incf.github.io/bids-validator/)
+Once satisfied with an initial BIDS conversion, prior to running the conversion on an entire study first ensure that the BIDS converted dataset meets the BIDS specification by using the [BIDS validator web version](http://incf.github.io/bids-validator/)
 

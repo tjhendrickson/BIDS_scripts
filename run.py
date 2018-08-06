@@ -16,7 +16,7 @@ parser.add_argument('--proc_id', help="scanning session id")
 parser.add_argument('--subj_id', help="subject id")
 parser.add_argument('--heuristic', help="Path to heuristic file, if the file is already within the container (i.e. within heuristics folder)"
 										" you do not have to specify a path. ")
-parser.add_argument('--dry_run', help="Dry run. A dicominfo_*.tsv file will generate within .heudiconv/'subj_id'/info directory which can be used to create heuristic script")
+parser.add_argument('--dry_run', action='store_true', help="Dry run. A dicominfo_*.tsv file will generate within .heudiconv/'subj_id'/info directory which can be used to create heuristic script")
 
 args = parser.parse_args()
 
@@ -25,15 +25,6 @@ temp_dir = args.temp_dir
 study_name = args.study_name
 proc_id = args.proc_id
 subj_id = args.subj_id
-
-if args.heuristic == None:
-	heuristics_script = "/heuristics/" + study_name + "_heuristics.py"
-	if not os.path.exists(heuristics_script):
-		raise Exception("The heuristics script with the path /heuristics/'study_name'_heuristics.py does not exist."
-						 " Re-run and place path within --heuristic argument.")
-else:
-	heuristics_script = args.heuristic
-
 
 if not os.path.exists(os.path.join(output_dir, "BIDS_output")):
 	os.makedirs(os.path.join(output_dir, "BIDS_output"))
@@ -44,12 +35,19 @@ if not os.path.exists(os.path.join(temp_dir, subj_id)):
 if not os.path.exists(os.path.join(temp_dir, subj_id, proc_id)):
 	shutil.move(os.path.join(temp_dir, proc_id), (os.path.join(temp_dir, subj_id, proc_id)))
 
-if args.dry_run:
-    os.system('/neurodocker/startup.sh heudiconv '
+if args.dry_run == True:
+	os.system('/neurodocker/startup.sh heudiconv '
 		  '"-d %s/{subject}/{session}/*/* -s %s -ss %s --overwrite -o %s/BIDS_output -c none -f convertall" '
-		  % (temp_dir,  subj_id, proc_id, output_dir, heuristics_script))
+		  % (temp_dir,  subj_id, proc_id, output_dir))
 else:
-    os.system('/neurodocker/startup.sh heudiconv '
+	if args.heuristic == None:
+		heuristics_script = "/heuristics/" + study_name + "_heuristics.py"
+		if not os.path.exists(heuristics_script):
+			raise Exception("The heuristics script with the path /heuristics/'study_name'_heuristics.py does not exist."
+							 " Re-run and place path within --heuristic argument.")
+	else:
+		heuristics_script = args.heuristic
+	os.system('/neurodocker/startup.sh heudiconv '
     		  '"-d %s/{subject}/{session}/*/* -s %s -ss %s --overwrite -o %s/BIDS_output -c dcm2niix -f %s -b" '
     		  % (temp_dir,  subj_id, proc_id, output_dir, heuristics_script))
 
