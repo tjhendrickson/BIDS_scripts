@@ -31,7 +31,7 @@ From: nipy/heudiconv
 	mkdir /scratch
 	mkdir /local-scratch
 	mkdir /output_dir 
-    mkdir /temp_dir
+    mkdir /dicom_dir
     touch /heuristic.py
 
 	
