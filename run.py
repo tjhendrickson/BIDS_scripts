@@ -45,10 +45,10 @@ if args.ses_id:
 	if len(glob(args.dicom_dir + "/*" + args.ses_id + "*")) == 1:
 		if args.subj_id:
 			shutil.copytree(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0],"/tmp/" + args.subj_id +"/" + args.ses_id)
-			convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/{session}/*/*.dcm -s %s -ss %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.subj_id, args.ses_id, args.output_dir)
+			convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/{session}/*/* -s %s -ss %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.subj_id, args.ses_id, args.output_dir)
 		else:
 			shutil.copytree(glob(args.dicom_dir + "/*" + args.subj_id + "*")[0],"/tmp/" + args.subj_id)
-			convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/*/*.dcm -s %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.subj_id, args.output_dir)
+			convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/*/* -s %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.subj_id, args.output_dir)
 	elif len(glob(args.dicom_dir + "/*" + args.ses_id + "*")) > 1:
 		raise Exception("There are multiple directories within dicom directory: " + args.dicom_dir + " with the same session id: " + args.ses_id + ". Must exit.")
 	else:
@@ -57,7 +57,7 @@ else:
 	if args.subj_id:
 		if len(glob(args.dicom_dir + "/*" + args.subj_id + "*")) == 1:
 			shutil.copytree(glob(args.dicom_dir + "/*" + args.subj_id + "*")[0],"/tmp/" + args.subj_id)	
-			convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/*/*.dcm -s %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.subj_id, args.output_dir)
+			convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/*/* -s %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.subj_id, args.output_dir)
 		elif len(glob(args.dicom_dir + "/*" + args.subj_id + "*")) > 1:
 			raise Exception("There are multiple directories within dicom directory: " + args.dicom_dir + " with the same subjct id: " + args.subj_id + ". Must exit.")
 		else:
