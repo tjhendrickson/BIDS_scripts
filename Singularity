@@ -27,11 +27,9 @@ From: nipy/heudiconv
 	chmod +x /run.py
 
 	# Make local folders
-	mkdir /share
-	mkdir /scratch
-	mkdir /local-scratch
+	mkdir /temp_dicom_dir
 	mkdir /output_dir 
-    mkdir /temp_dir
+    mkdir /dicom_dir
     touch /heuristic.py
 
 	
