@@ -41,35 +41,18 @@ else:
 
 	
 #try to determine how data is organized within dicom directory, place within /tmp directory, and determine what heudiconv format (cross-sectional, longitudinal should look like)
-if args.ses_id:
-	if len(glob(args.dicom_dir + "/*" + args.ses_id + "*")) == 1:
-		if args.subj_id:
-			shutil.copytree(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0],"/tmp/" + args.subj_id +"/" + args.ses_id)
+if args.subj_id:
+	if args.ses_id:
+		if len(glob(args.dicom_dir + "/*" + args.subj_id + "*/*" + args.ses_id + "*")) == 1:
+			shutil.copytree(glob(args.dicom_dir + "/*" + args.subj_id + "*/*" + args.ses_id + "*")[0],"/tmp/" + args.subj_id +"/" + args.ses_id)
+			os.makedirs("/tmp/" + args.subj_id +"/" + args.ses_id + "/extra_dicom_dir")
+			for file in glob("/tmp/" + args.subj_id +"/" + args.ses_id +"/IM*"):
+				shutil.move(file, "/tmp/" + args.subj_id +"/" + args.ses_id + "/extra_dicom_dir")
 			convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/{session}/*/* -s %s -ss %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.subj_id, args.ses_id, args.output_dir)
+		elif len(glob(args.dicom_dir + "/*" + args.subj_id + "*/*" + args.ses_id + "*"))> 1:
+			raise Exception("There are multiple directories within dicom directory: " + args.dicom_dir + " with the same session id: " + args.ses_id + ". Must exit.")
 		else:
-			shutil.copytree(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0],"/tmp/" + args.ses_id)
-			convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/*/* -s %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.ses_id, args.output_dir)
-	elif len(glob(args.dicom_dir + "/*" + args.ses_id + "*")) > 1:
-		raise Exception("There are multiple directories within dicom directory: " + args.dicom_dir + " with the same session id: " + args.ses_id + ". Must exit.")
-	else:
-		raise Exception("Cannot find a directory within dicom directory: " + args.dicom_dir + " with the session id: " + args.ses_id + ". Must exit.")
-else:
-	if args.subj_id:
-		if len(glob(args.dicom_dir + "/*" + args.subj_id + "*")) == 1:
-			shutil.copytree(glob(args.dicom_dir + "/*" + args.subj_id + "*")[0],"/tmp/" + args.subj_id)	
-			convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/*/* -s %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.subj_id, args.output_dir)
-		elif len(glob(args.dicom_dir + "/*" + args.subj_id + "*")) > 1:
-			raise Exception("There are multiple directories within dicom directory: " + args.dicom_dir + " with the same subjct id: " + args.subj_id + ". Must exit.")
-		else:
-			raise Exception("Cannot find a directory within dicom directory: " + args.dicom_dir + " with the session id: " + args.subj_id + ". Must exit.")
-	else:
-		raise Exception("Neither subject id nor session id were entered, at least one (preferably both) are required in order to convert data")
-
-#if not os.path.exists(os.path.join(args.dicom_dir, args.subj_id)):
-#	os.makedirs(os.path.join(args.dicom_dir, args.subj_id))
-
-#if not os.path.exists(os.path.join(args.dicom_dir, args.subj_id, args.ses_id)):
-#	shutil.move(os.path.join(args.dicom_dir, args.ses_id), (os.path.join(args.dicom_dir, args.subj_id, args.ses_id)))
+			raise Exception("Cannot find a directory within dicom directory: " + args.dicom_dir + " with the session id: " + args.ses_id + ". Must exit.")
 
 os.system(convert_format + convert_type)
 

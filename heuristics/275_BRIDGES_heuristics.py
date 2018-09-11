@@ -1,3 +1,4 @@
+import pdb
 def create_key(template, outtype=('nii.gz','dicom'), annotation_classes=None): #), annotation_classes=None):
     if template is None or not template:
         raise ValueError('Template must be a valid format string')
@@ -14,6 +15,7 @@ def infotodict(seqinfo):
     seqitem: run number during scanning
     subindex: sub index within group
     """
+    pdb.set_trace()
     t1 = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_T1w')
     t2 = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_T2w')
 

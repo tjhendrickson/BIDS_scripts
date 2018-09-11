@@ -13,7 +13,7 @@ From: nipy/heudiconv
 
 
 %files
-	run.py /run.py
+	run-phillips.py /run.py
 	heuristics /heuristics
 	IntendedFor.py /IntendedFor.py
 
@@ -26,7 +26,7 @@ From: nipy/heudiconv
 	# Make script executable
 	chmod +x /run.py
 
-	# Make local folders
+	# Make local foldersdicominfo_ses-001.tsv
 	mkdir /share
 	mkdir /scratch
 	mkdir /local-scratch
