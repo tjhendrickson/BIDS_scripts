@@ -27,7 +27,6 @@ From: nipy/heudiconv
 	chmod +x /run.py
 
 	# Make local folders
-	mkdir /temp_dicom_dir
 	mkdir /output_dir 
     mkdir /dicom_dir
     touch /heuristic.py

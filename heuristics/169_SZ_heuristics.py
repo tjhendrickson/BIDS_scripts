@@ -20,7 +20,7 @@ def infotodict(seqinfo):
 	rest = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-rest_run-{item:02d}_bold')
 	dwi = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_run-{item:02d}_dwi')
 
-	phase = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_phase1')
+	phase = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_phasediff')
 	mag = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_magnitude1')
 
 	info = {t1: [], t2: [], pd: [], rest: [], dwi: [], phase: [], mag: []}

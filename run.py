@@ -37,23 +37,25 @@ else:
 		convert_type = " -c dcm2niix -f %s -b" % heuristics_script
 
 	
-#try to determine how data is organized within dicom directory, place within /temp_dicom_dir directory, and determine what heudiconv format (cross-sectional, longitudinal should look like)
+#try to determine how data is organized within dicom directory, place within /tmp directory, and determine what heudiconv format (cross-sectional, longitudinal should look like)
 if args.ses_id:
 	if len(glob(args.dicom_dir + "/*" + args.ses_id + "*")) == 1:
 		if args.subj_id:
 			#is it a tar file? If so convert tar file directly
-			if tarfile.is_tarfile(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0]):
-				shutil.copytree(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0],"/temp_dicom_dir/" + args.subj_id +"/" + args.ses_id)
-				convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/{session} -s %s -ss %s --overwrite -o %s/BIDS_output"' % ("/temp_dicom_dir",  args.subj_id, args.ses_id, args.output_dir)
+			if os.path.isfile(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0]):
+				if tarfile.is_tarfile(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0]):
+					shutil.copytree(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0],"/tmp/" + args.subj_id +"/" + args.ses_id)
+					convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/{session} -s %s -ss %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.subj_id, args.ses_id, args.output_dir)
 			else:
-				shutil.copytree(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0],"/temp_dicom_dir/" + args.subj_id +"/" + args.ses_id)
-				convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/{session}/*/* -s %s -ss %s --overwrite -o %s/BIDS_output"' % ("/temp_dicom_dir",  args.subj_id, args.ses_id, args.output_dir)
+				shutil.copytree(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0],"/tmp/" + args.subj_id +"/" + args.ses_id)
+				convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/{session}/*/* -s %s -ss %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.subj_id, args.ses_id, args.output_dir)
 		else:
-			if tarfile.is_tarfile(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0]):
-				convert_format = '/neurodocker/startup.sh heudiconv "-d %s/*{subject}* -s %s --overwrite -o %s/BIDS_output"' % (args.dicom_dir, args.ses_id, args.output_dir)
+			if os.path.isfile(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0]):
+				if tarfile.is_tarfile(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0]):
+					convert_format = '/neurodocker/startup.sh heudiconv "-d %s/*{subject}* -s %s --overwrite -o %s/BIDS_output"' % (args.dicom_dir, args.ses_id, args.output_dir)
 			else:
-				shutil.copytree(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0],"/temp_dicom_dir/" + args.ses_id)
-				convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/*/* -s %s --overwrite -o %s/BIDS_output"' % ("/temp_dicom_dir",  args.ses_id, args.output_dir)
+				shutil.copytree(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0],"/tmp/" + args.ses_id)
+				convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/*/* -s %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.ses_id, args.output_dir)
 	elif len(glob(args.dicom_dir + "/*" + args.ses_id + "*")) > 1:
 		raise Exception("There are multiple directories within dicom directory: " + args.dicom_dir + " with the same session id: " + args.ses_id + ". Must exit.")
 	else:
@@ -61,11 +63,12 @@ if args.ses_id:
 else:
 	if args.subj_id:
 		if len(glob(args.dicom_dir + "/*" + args.subj_id + "*")) == 1:
-			if tarfile.is_tarfile(glob(args.dicom_dir + "/*" + args.subj_id + "*")[0]):
-				convert_format = '/neurodocker/startup.sh heudiconv "-d %s/*{subject}* -s %s --overwrite -o %s/BIDS_output"' % (args.dicom_dir,  args.subj_id, args.output_dir)
+			if os.path.isfile(glob(args.dicom_dir + "/*" + args.subj_id + "*")[0]):
+				if tarfile.is_tarfile(glob(args.dicom_dir + "/*" + args.subj_id + "*")[0]):
+					convert_format = '/neurodocker/startup.sh heudiconv "-d %s/*{subject}* -s %s --overwrite -o %s/BIDS_output"' % (args.dicom_dir,  args.subj_id, args.output_dir)
 			else:
-				shutil.copytree(glob(args.dicom_dir + "/*" + args.subj_id + "*")[0],"/temp_dicom_dir/" + args.subj_id)	
-				convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/*/* -s %s --overwrite -o %s/BIDS_output"' % ("/temp_dicom_dir",  args.subj_id, args.output_dir)
+				shutil.copytree(glob(args.dicom_dir + "/*" + args.subj_id + "*")[0],"/tmp/" + args.subj_id)	
+				convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/*/* -s %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.subj_id, args.output_dir)
 		elif len(glob(args.dicom_dir + "/*" + args.subj_id + "*")) > 1:
 			raise Exception("There are multiple directories within dicom directory: " + args.dicom_dir + " with the same subjct id: " + args.subj_id + ". Must exit.")
 		else:
@@ -75,13 +78,11 @@ else:
 
 os.system(convert_format + convert_type)
 
-#once conversion is finished delete data from temp_dicom_dir
+#once conversion is finished delete data from tmp
 if args.subj_id:
-	if os.path.isdir("/temp_dicom_dir/" + args.subj_id):
-		shutil.rmtree("/temp_dicom_dir/" + args.subj_id)
+	shutil.rmtree("/tmp/" + args.subj_id)
 elif args.ses_id:
-	if os.path.isdir("/temp_dicom_dir/" + args.ses_id):
-		shutil.rmtree("/temp_dicom_dir/" + args.ses_id)
+	shutil.rmtree("/tmp/" + args.ses_id)
 
 
 #now change IntendedFor field within fmaps
