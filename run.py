@@ -80,9 +80,11 @@ os.system(convert_format + convert_type)
 
 #once conversion is finished delete data from tmp
 if args.subj_id:
-	shutil.rmtree("/tmp/" + args.subj_id)
+	if os.path.isdir("/tmp/" + args.subj_id):
+		shutil.rmtree("/tmp/" + args.subj_id)
 elif args.ses_id:
-	shutil.rmtree("/tmp/" + args.ses_id)
+	if os.path.isdir("/tmp/" + args.ses_id):
+		shutil.rmtree("/tmp/" + args.ses_id)
 
 
 #now change IntendedFor field within fmaps
