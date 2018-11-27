@@ -39,14 +39,21 @@ optional arguments:
                         .heudiconv/'subj_id'/info directory which can be used
                         to create heuristic script
 
-```
+This application must be run with either the "--heuristic" or "--dry_run" argument, it will fail otherwise.
 
-To run a single participant without heuristic argument:
+Use the "--dry_run" argument to take a close look and acquistion parameters for a scanning session.
+
+To run a single participant with dry_run argument:
 ```
 singularity run -B /home/timothy/sandbox_DO_NOT_DELETE/BIDS/142_CIFASD_4:/output_dir \
 -B /path/to/dicom/data/dir:/dicom_dir /path/to/singularity/images/directory/imagename.img \
---output_dir /output_dir --dicom_dir /dicom_dir --ses_id 10000 --subj_id 1000
+--output_dir /output_dir --dicom_dir /dicom_dir --ses_id 10000 --subj_id 1000 --dry_run
 ```
+This will output a hidden folder (named .heudiconv) along with sub-folders based on arguments provided to "--subj_id" and "--ses_id" respectively.
+Within the sub-folders will be a tsv file that begins with "dicominfo". Based on the example above the path to the file will be ".heudiconv/1000/ses-10000/info/dicominfo_ses-10000.tsv"
+
+Use this tsv file to design the script, heuristics script, used to organize your eventual nifti data. Use a script within the "heuristics" folder of this repository and the heuristics script tutorial ([heuristics tutorial](http://reproducibility.stanford.edu/bids-tutorial-series-part-2a/#heuman3))
+
 
 To run a single participant with heuristic argument:
 ```
@@ -56,14 +63,6 @@ singularity run -B /home/timothy/sandbox_DO_NOT_DELETE/BIDS/142_CIFASD_4:/output
 --output_dir /output_dir --dicom_dir /dicom_dir --ses_id 10000 --subj_id 1000 --heuristic /heuristic.py
 
 ```
-
-To run a single participant with dry_run argument:
-```
-singularity run -B /home/timothy/sandbox_DO_NOT_DELETE/BIDS/142_CIFASD_4:/output_dir \
--B /path/to/dicom/data/dir:/dicom_dir /path/to/singularity/images/directory/imagename.img \
---output_dir /output_dir --dicom_dir /dicom_dir --ses_id 10000 --subj_id 1000 --dry_run
-```
-
 
 ## Important Notes
 
@@ -79,7 +78,7 @@ Due to the restrictive nature of BIDS the dicom data must be in a particular for
 
 **3) Subject ID and Session ID names**
 
-You must use alphanumerics (i.e. letters or numbers) only (**no special characters**) with your subject IDs (subj_id) and session IDs (ses_id).
+You must use alphanumerics (i.e. letters or numbers) only (**no special characters**) with your subject IDs (subj_id) and session IDs (ses_id). **Note the "--ses_id" argument is optional**!
 
 ### Best Practices
 
