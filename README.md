@@ -5,10 +5,9 @@ These scripts will convert raw DICOM data set to [BIDS](http://bids.neuroimaging
 
 
 ### Container Hosting
-This app is maintained on singularityhub [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/1332).You can get the most recent container several different ways below:
+This app is maintained on singularityhub [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/1332). Pull the most recent container below, (**NOTE: you only have to do this once!**):
 ```
 singularity pull shub://tjhendrickson/BIDS_scripts
-singularity pull --name customname.img shub://tjhendrickson/BIDS_scripts
 ```
 
 ### Singularity Usage
