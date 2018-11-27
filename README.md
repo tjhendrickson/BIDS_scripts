@@ -39,9 +39,11 @@ optional arguments:
                         .heudiconv/'subj_id'/info directory which can be used
                         to create heuristic script
 
+
+```
 This application must be run with either the "--heuristic" or "--dry_run" argument, it will fail otherwise.
 
-Use the "--dry_run" argument to take a close look and acquistion parameters for a scanning session.
+Use the "--dry_run" argument to take a closer look at the acquistion parameters for a scanning session.
 
 To run a single participant with dry_run argument:
 ```
