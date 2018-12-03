@@ -14,6 +14,8 @@ def infotodict(seqinfo):
     seqitem: run number during scanning
     subindex: sub index within group
     """
+    import pdb
+
     t1 = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_T1w')
     t2 = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_T2w')
 
@@ -28,8 +30,11 @@ def infotodict(seqinfo):
     spinecho_map_bold = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_dir-{dir}_run-{item:02d}_epi')
 
     info = {t1: [], t2: [], task: [], rest: [], dwi: [], spinecho_map_bold: [], sbref_rest: [], sbref_task: []}
-
     for idx, s in enumerate(seqinfo):
+        
+        if idx + 1 < len(seqinfo):
+            s_next = seqinfo[idx+1]
+
         if (s.dim3 == 208) and ('NORM' in s.image_type):
             if 'T1w' in s.dcm_dir_name:
                 acq = 'T1MPR'
@@ -42,14 +47,14 @@ def infotodict(seqinfo):
         if (s.dim4 == 159) and ('DWI_79dir_b1000_2000_PA' in s.protocol_name):
             info[dwi].append({'item': s.series_id, 'acq': 'PA'})
         if (s.dim4 == 912):
-            info[rest].append({'item': s.series_id, 'acq': 'REST_PA'})
+            info[rest].append({'item': s.series_id, 'acq': 'REST'})
         if (s.dim4 == 494) and (('HARIRI_PA' in s.protocol_name)):
-            info[task].append({'item': s.series_id, 'acq': 'HARIRI_PA'})
+            info[task].append({'item': s.series_id, 'acq': 'HARIRI'})
         if (s.dim4 == 1):
-            if ('REST_PA' in s.protocol_name):
-                info[sbref_rest].append({'item': s.series_id, 'acq': 'REST_PA'})
-            elif ('HARIRI_PA' in s.protocol_name):
-                info[sbref_task].append({'item': s.series_id, 'acq': 'HARIRI_PA'})
+            if s_next.dim4 == 912:
+                info[sbref_rest].append({'item': s.series_id, 'acq': 'REST'})
+            elif s_next.dim4 == 494:
+                info[sbref_task].append({'item': s.series_id, 'acq': 'HARIRI'})
         if (s.dim4 == 3) and ('SpinEchoFieldMap_PA' in s.protocol_name):
             info[spinecho_map_bold].append({'item': s.series_id, 'dir': 'PA'})
         if (s.dim4 == 3) and ('SpinEchoFieldMap_REV_PA' in s.protocol_name):

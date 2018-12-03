@@ -40,43 +40,43 @@ def infotodict(seqinfo):
             else:
                 acq = 'T2SPC'
                 info[t2].append({'item': s.series_id, 'acq': acq})
-        elif (s.dim4 == 612) and (('REST' in s.protocol_name)):
+        elif (s.dim4 == 1040) and (('REST' in s.protocol_name)):
             info[rest].append({'item': s.series_id})
         elif (s.dim4 == 1) and (('REST' in s.protocol_name)):
-            if s_next.dim4 == 612:
+            if s_next.dim4 == 1040:
                 info[sbref_rest].append({'item': s.series_id})
         elif (s.dim4 == 376):
-            if 'BED_TASK1_PA' in s.protocol_name:
-                info[task].append({'item': s.series_id, 'acq': 'BED1'})
-            elif 'BED_TASK2_PA' in s.protocol_name:
-                info[task].append({'item': s.series_id, 'acq': 'BED2'})
-            elif 'BED_TASK3_PA' in s.protocol_name:
-                info[task].append({'item': s.series_id, 'acq': 'BED3'})
-            elif 'BED_TASK4_PA' in s.protocol_name:
-                info[task].append({'item': s.series_id, 'acq': 'BED4'})
-            elif 'BED_TASK5_PA' in s.protocol_name:
-                info[task].append({'item': s.series_id, 'acq': 'BED5'})
-            elif 'BED_TASK6_PA' in s.protocol_name:
-                info[task].append({'item': s.series_id, 'acq': 'BED6'})
+            if 'KET_TASK1_PA' in s.protocol_name:
+                info[task].append({'item': s.series_id, 'acq': 'KET1'})
+            elif 'KET_TASK2_PA' in s.protocol_name:
+                info[task].append({'item': s.series_id, 'acq': 'KET2'})
+            elif 'KET_TASK3_PA' in s.protocol_name:
+                info[task].append({'item': s.series_id, 'acq': 'KET3'})
+            elif 'KET_TASK4_PA' in s.protocol_name:
+                info[task].append({'item': s.series_id, 'acq': 'KET4'})
+            elif 'KET_TASK5_PA' in s.protocol_name:
+                info[task].append({'item': s.series_id, 'acq': 'KET5'})
+            elif 'KET_TASK6_PA' in s.protocol_name:
+                info[task].append({'item': s.series_id, 'acq': 'KET6'})
         elif (s.dim4 == 1):
-            if ('BED_TASK1_PA' in s.protocol_name):
+            if ('KET_TASK1_PA' in s.protocol_name):
                 if s_next.dim4 == 376:
-                    info[sbref_task].append({'item': s.series_id, 'acq':'BED1' })
-            elif ('BED_TASK2_PA' in s.protocol_name):
+                    info[sbref_task].append({'item': s.series_id, 'acq':'KET1' })
+            elif ('KET_TASK2_PA' in s.protocol_name):
                 if s_next.dim4 == 376:                
-                    info[sbref_task].append({'item': s.series_id, 'acq': 'BED2'})
-            elif ('BED_TASK3_PA' in s.protocol_name):
+                    info[sbref_task].append({'item': s.series_id, 'acq': 'KET2'})
+            elif ('KET_TASK3_PA' in s.protocol_name):
                 if s_next.dim4 == 376:
-                    info[sbref_task].append({'item': s.series_id, 'acq': 'BED3' })
-            elif ('BED_TASK4_PA' in s.protocol_name):
+                    info[sbref_task].append({'item': s.series_id, 'acq': 'KET3' })
+            elif ('KET_TASK4_PA' in s.protocol_name):
                 if s_next.dim4 == 376:
-                    info[sbref_task].append({'item': s.series_id, 'acq': 'BED4'})
-            elif ('BED_TASK5_PA' in s.protocol_name):
+                    info[sbref_task].append({'item': s.series_id, 'acq': 'KET4'})
+            elif ('KET_TASK5_PA' in s.protocol_name):
                 if s_next.dim4 == 376:
-                    info[sbref_task].append({'item': s.series_id, 'acq': 'BED5'})
-            elif ('BED_TASK6_PA' in s.protocol_name):
+                    info[sbref_task].append({'item': s.series_id, 'acq': 'KET5'})
+            elif ('KET_TASK6_PA' in s.protocol_name):
                 if s_next.dim4 == 376:
-                    info[sbref_task].append({'item': s.series_id, 'acq': 'BED6'})
+                    info[sbref_task].append({'item': s.series_id, 'acq': 'KET6'})
         elif (s.dim4 == 3) and ('SpinEchoFieldMap_PA' in s.protocol_name):
             info[spinecho_map_bold].append({'item': s.series_id, 'dir': 'PA'})
         elif (s.dim4 == 3) and ('SpinEchoFieldMap_REV_PA' in s.protocol_name):
