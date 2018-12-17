@@ -21,13 +21,15 @@ parser.add_argument('--dry_run', action='store_true', help="Dry run. A dicominfo
 
 args = parser.parse_args()
 
+pdb.set_trace()
+
 #make bids directory if it does not exist
 if not os.path.exists(os.path.join(args.output_dir, "BIDS_output")):
 	os.makedirs(os.path.join(args.output_dir, "BIDS_output"))
 
 # determine conversion type (i.e. dry run or heuristic)
 if args.dry_run == True:
-	convert_type = " -c none -f convertall" 
+	convert_type = " -c none -f convertall"
 else:
 	if args.heuristic == None:
 		raise Exception("If a dry_run is not being a conducted a heuristic script must be used. Re-run and place path within --heuristic argument.")
@@ -62,7 +64,7 @@ if args.ses_id:
 				if tarfile.is_tarfile(glob(args.dicom_dir + "/*" + args.subj_id + "*")[0]):
 					convert_format = '/neurodocker/startup.sh heudiconv "-d %s/*{subject}* -s %s --overwrite -o %s/BIDS_output"' % (args.dicom_dir,  args.subj_id, args.output_dir)
 			else:
-				shutil.copytree(glob(args.dicom_dir + "/*" + args.subj_id + "*")[0],"/tmp/" + args.subj_id + "/" + args.ses_id)	
+				shutil.copytree(glob(args.dicom_dir + "/*" + args.subj_id + "*")[0],"/tmp/" + args.subj_id + "/" + args.ses_id)
 				convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/{session}/*/* -s %s -ss %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.subj_id, args.ses_id, args.output_dir)
 		elif len(glob(args.dicom_dir + "/*" + args.subj_id + "*")) > 1:
 			raise Exception("There are multiple directories within dicom directory: " + args.dicom_dir + " with the same subjct id: " + args.subj_id + ". Must exit.")
@@ -80,7 +82,7 @@ else:
 				if tarfile.is_tarfile(glob(args.dicom_dir + "/*" + args.subj_id + "*")[0]):
 					convert_format = '/neurodocker/startup.sh heudiconv "-d %s/*{subject}* -s %s --overwrite -o %s/BIDS_output"' % (args.dicom_dir,  args.subj_id, args.output_dir)
 			else:
-				shutil.copytree(glob(args.dicom_dir + "/*" + args.subj_id + "*")[0],"/tmp/" + args.subj_id)	
+				shutil.copytree(glob(args.dicom_dir + "/*" + args.subj_id + "*")[0],"/tmp/" + args.subj_id)
 				convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/*/* -s %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.subj_id, args.output_dir)
 		elif len(glob(args.dicom_dir + "/*" + args.subj_id + "*")) > 1:
 			raise Exception("There are multiple directories within dicom directory: " + args.dicom_dir + " with the same subjct id: " + args.subj_id + ". Must exit.")
