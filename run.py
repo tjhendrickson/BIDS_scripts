@@ -11,7 +11,6 @@ import tarfile
 import re
 
 # Book keeping and global variables
-pdb.set_trace()
 parser = argparse.ArgumentParser(description='Script that controls BIDS conversion for individual studies')
 parser.add_argument('--output_dir', help="The directory that the BIDS data will be outputted to")
 parser.add_argument('--dicom_dir', help='The directory that houses dicom directories/files.')
