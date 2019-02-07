@@ -11,6 +11,7 @@ import tarfile
 import re
 
 # Book keeping and global variables
+pdb.set_trace()
 parser = argparse.ArgumentParser(description='Script that controls BIDS conversion for individual studies')
 parser.add_argument('--output_dir', help="The directory that the BIDS data will be outputted to")
 parser.add_argument('--dicom_dir', help='The directory that houses dicom directories/files.')
@@ -45,17 +46,17 @@ if args.ses_id:
             if os.path.isfile(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0]):
                 if tarfile.is_tarfile(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0]):
                     shutil.copytree(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0],"/tmp/" + args.subj_id +"/" + args.ses_id)
-                    convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/{session} -s %s -ss %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.subj_id, args.ses_id, args.output_dir)
+                    convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session} -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp",  args.subj_id, args.ses_id, args.output_dir)
             else:
                 shutil.copytree(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0],"/tmp/" + args.subj_id +"/" + args.ses_id)
-                convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/{session}/*/* -s %s -ss %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.subj_id, args.ses_id, args.output_dir)
+                convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/*/* -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp",  args.subj_id, args.ses_id, args.output_dir)
         else:
             if os.path.isfile(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0]):
                 if tarfile.is_tarfile(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0]):
-                    convert_format = '/neurodocker/startup.sh heudiconv "-d %s/*{subject}* -s %s --overwrite -o %s/BIDS_output"' % (args.dicom_dir, args.ses_id, args.output_dir)
+                    convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{subject}* -s %s --overwrite -o %s/BIDS_output' % (args.dicom_dir, args.ses_id, args.output_dir)
             else:
                 shutil.copytree(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0],"/tmp/" + args.ses_id)
-                convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/*/* -s %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.ses_id, args.output_dir)
+                convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/*/* -s %s --overwrite -o %s/BIDS_output' % ("/tmp",  args.ses_id, args.output_dir)
     elif len(glob(args.dicom_dir + "/*" + args.ses_id + "*")) > 1:
         raise Exception("There are multiple directories within dicom directory: " + args.dicom_dir + " with the same session id: " + args.ses_id + ". Must exit.")
     else:
@@ -65,10 +66,10 @@ else:
         if len(glob(args.dicom_dir + "/*" + args.subj_id + "*")) == 1:
             if os.path.isfile(glob(args.dicom_dir + "/*" + args.subj_id + "*")[0]):
                 if tarfile.is_tarfile(glob(args.dicom_dir + "/*" + args.subj_id + "*")[0]):
-                    convert_format = '/neurodocker/startup.sh heudiconv "-d %s/*{subject}* -s %s --overwrite -o %s/BIDS_output"' % (args.dicom_dir,  args.subj_id, args.output_dir)
+                    convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{subject}* -s %s --overwrite -o %s/BIDS_output' % (args.dicom_dir,  args.subj_id, args.output_dir)
             else:
                 shutil.copytree(glob(args.dicom_dir + "/*" + args.subj_id + "*")[0],"/tmp/" + args.subj_id)	
-                convert_format = '/neurodocker/startup.sh heudiconv "-d %s/{subject}/*/* -s %s --overwrite -o %s/BIDS_output"' % ("/tmp",  args.subj_id, args.output_dir)
+                convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/*/* -s %s --overwrite -o %s/BIDS_output' % ("/tmp",  args.subj_id, args.output_dir)
         elif len(glob(args.dicom_dir + "/*" + args.subj_id + "*")) > 1:
             raise Exception("There are multiple directories within dicom directory: " + args.dicom_dir + " with the same subjct id: " + args.subj_id + ". Must exit.")
         else:
