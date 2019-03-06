@@ -71,20 +71,20 @@ elif args.ses_id and not args.subj_id:
 # subject id and session id
 elif args.ses_id and args.subj_id:
 
-    if len(glob(args.dicom_dir + "/*" + args.subj_id + "*" + args.ses_id + "*")) == 1:
-        if os.path.isfile(glob(args.dicom_dir + "/*" + args.subj_id + "*" + args.ses_id + "*")[0]):
-            if tarfile.is_tarfile(glob(args.dicom_dir + "/*" + args.subj_id + "*" + args.ses_id + "*")[0]):
-                convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{subject}*{session}* -s %s -ss %s --overwrite -o %s/BIDS_output' % (args.dicom_dir, args.subj_id, args.ses_id, args.output_dir)
-        elif os.path.isdir(glob(args.dicom_dir + "/*" + args.subj_id + "*" + args.ses_id + "*")[0]):
-            shutil.copytree(glob(args.dicom_dir + "/*" + args.subj_id + "*" + args.ses_id + "*")[0], "/tmp/" + args.subj_id + "/" + args.ses_id)
+    if len(glob(args.dicom_dir + "/*" + args.subj_id + "*/*" + args.ses_id + "*")) == 1:
+        if os.path.isfile(glob(args.dicom_dir + "/*" + args.subj_id + "*/*" + args.ses_id + "*")[0]):
+            if tarfile.is_tarfile(glob(args.dicom_dir + "/*" + args.subj_id + "*/*" + args.ses_id + "*")[0]):
+                convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{subject}*/*{session}* -s %s -ss %s --overwrite -o %s/BIDS_output' % (args.dicom_dir, args.subj_id, args.ses_id, args.output_dir)
+        elif os.path.isdir(glob(args.dicom_dir + "/*" + args.subj_id + "*/*" + args.ses_id + "*")[0]):
+            shutil.copytree(glob(args.dicom_dir + "/*" + args.subj_id + "*/*" + args.ses_id + "*")[0], "/tmp/" + args.subj_id + "/" + args.ses_id)
             convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/*/* -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp",  args.subj_id, args.ses_id, args.output_dir)
     
-    elif len(glob(args.dicom_dir + "/*" + args.ses_id + "*" + args.subj_id + "*")) == 1:
-        if os.path.isfile(glob(args.dicom_dir + "/*" + args.ses_id + "*" + args.subj_id + "*")[0]):
-            if tarfile.is_tarfile(glob(args.dicom_dir + "/*" + args.ses_id + "*" + args.subj_id + "*")[0]):
-                convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{subject}*{session}* -s %s -ss %s --overwrite -o %s/BIDS_output' % (args.dicom_dir, args.ses_id, args.subj_id, args.output_dir)
-        elif os.path.isdir(glob(args.dicom_dir + "/*" + args.ses_id + "*" + args.subj_id + "*")[0]):
-            shutil.copytree(glob(args.dicom_dir + "/*" + args.ses_id + "*" + args.subj_id + "*")[0],"/tmp/" + args.subj_id)
+    elif len(glob(args.dicom_dir + "/*" + args.ses_id + "*/*" + args.subj_id + "*")) == 1:
+        if os.path.isfile(glob(args.dicom_dir + "/*" + args.ses_id + "*/*" + args.subj_id + "*")[0]):
+            if tarfile.is_tarfile(glob(args.dicom_dir + "/*" + args.ses_id + "*/*" + args.subj_id + "*")[0]):
+                convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{subject}*/*{session}* -s %s -ss %s --overwrite -o %s/BIDS_output' % (args.dicom_dir, args.ses_id, args.subj_id, args.output_dir)
+        elif os.path.isdir(glob(args.dicom_dir + "/*" + args.ses_id + "*/*" + args.subj_id + "*")[0]):
+            shutil.copytree(glob(args.dicom_dir + "/*" + args.ses_id + "*/*" + args.subj_id + "*")[0],"/tmp/" + args.subj_id)
             convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/*/* -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp",  args.ses_id, args.subj_id, args.output_dir)
     
     elif len(glob(args.dicom_dir + "/*" + args.subj_id + "*")) == 1:
