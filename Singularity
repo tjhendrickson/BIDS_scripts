@@ -1,6 +1,6 @@
-# Read in singularity heudiconv image version 0.5.2
+# Read in singularity heudiconv image version 0.5.3.1
 Bootstrap: shub
-From: ReproNim/reproin:0.5.2
+From: ReproNim/reproin:0.5.3.1
 
 
 %environment
