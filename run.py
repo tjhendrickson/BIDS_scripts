@@ -104,6 +104,25 @@ elif args.ses_id and args.subj_id:
         elif os.path.isdir(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0]):
             shutil.copytree(glob(args.dicom_dir + "/*" + args.ses_id + "*")[0], "/tmp/" + args.subj_id + "/" + args.ses_id)
             convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/*/* -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp", args.subj_id, args.ses_id, args.output_dir)
+    
+    elif len(glob(args.dicom_dir + "/*" + args.subj_id + "*" + args.ses_id + "*")) == 1:
+        if os.path.isfile(glob(args.dicom_dir + "/*" + args.subj_id + "*" + args.ses_id + "*")[0]):
+            if tarfile.is_tarfile(glob(args.dicom_dir + "/*" + args.subj_id + "*" + args.ses_id + "*")[0]):
+                shutil.copy(glob(args.dicom_dir + "/*" + args.subj_id + "*" + args.ses_id + "*")[0], "/tmp/" + args.subj_id + "_" + args.ses_id + ".tar")
+                convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}_{session}.tar -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp", args.subj_id, args.ses_id, args.output_dir)
+        elif os.path.isdir(glob(args.dicom_dir + "/*" + args.subj_id + "*" + args.ses_id + "*")[0]):
+            shutil.copytree(glob(args.dicom_dir + "/*" + args.subj_id + "*" + args.ses_id + "*")[0], "/tmp/" + args.subj_id + "/" + args.ses_id)
+            convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/*/* -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp", args.subj_id, args.ses_id, args.output_dir)
+
+    elif len(glob(args.dicom_dir + "/*" + args.ses_id + "*" + args.subj_id + "*")) == 1:
+        if os.path.isfile(glob(args.dicom_dir + "/*" + args.ses_id + "*" + args.subj_id + "*")[0]):
+            if tarfile.is_tarfile(glob(args.dicom_dir + "/*" + args.ses_id + "*" + args.subj_id + "*")[0]):
+                shutil.copy(glob(args.dicom_dir + "/*" + args.ses_id + "*" + args.subj_id + "*")[0], "/tmp/" + args.ses_id + "_" + args.subj_id + ".tar")
+                convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}_{session}.tar -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp", args.subj_id, args.ses_id, args.output_dir)
+        elif os.path.isdir(glob(args.dicom_dir + "/*" + args.ses_id + "*" + args.subj_id + "*")[0]):
+            shutil.copytree(glob(args.dicom_dir + "/*" + args.ses_id + "*" + args.subj_id + "*")[0], "/tmp/" + args.subj_id + "/" + args.ses_id)
+            convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/*/* -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp", args.subj_id, args.ses_id, args.output_dir)
+            
     else:
         raise Exception("Cannot find a directory within dicom directory: " + args.dicom_dir + " with a combination of subject id: " + args.subj_id + ", or session id: " + args.ses_id + ". Must exit.")
 
