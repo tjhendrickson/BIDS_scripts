@@ -1,13 +1,13 @@
 ## BIDS Conversion Scripts
 
 ### Description
-These scripts will convert raw DICOM data set to [BIDS](http://bids.neuroimaging.io/format). Within the heuristics directory are various heuristics scripts that have been used to convert data from DICOM to BIDS. This may be helpful to build your own heuristics script. For additional information on how to create a heuristic script see the [heudiconv](https://github.com/nipy/heudiconv) github page.
+This repository contains scripts that will assist in the conversion of raw DICOM data sets to [BIDS](http://bids.neuroimaging.io/format). Within the heuristics directory are various scripts that have been used to convert data from DICOM to BIDS. This may be helpful to build your own heuristics script. For additional information on how to create a heuristic script see the [heudiconv](https://github.com/nipy/heudiconv) github page.
 
 
 ### Container Hosting
 This app is maintained on singularityhub [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/1332). Pull the most recent container below, (**NOTE: you only have to do this once!**):
 ```
-singularity pull shub://tjhendrickson/BIDS_scripts
+singularity pull shub://tjhendrickson/BIDS_scripts:v1.1
 ```
 
 ### Singularity Usage
