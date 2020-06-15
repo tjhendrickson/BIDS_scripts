@@ -41,7 +41,7 @@ From: ReproNim/reproin:0.5.3.1
 
 	# Install python Dependencies
 	apt-get update -y && apt-get install -y --no-install-recommends python-pip python-six python-nibabel python-setuptools
-	pip install pybids==0.5.1
+	pip3 install pybids==0.5.1
 	pip install --upgrade pybids
 
 
