@@ -8,6 +8,7 @@ from IntendedFor import setup
 import sys
 import re
 import fnmatch
+import pdb
 
 #book keeping and global variables
 parser = argparse.ArgumentParser(description='Script that controls BIDS conversion for individual studies')
@@ -56,17 +57,17 @@ if subj_id and not ses_id:
             for root, dirnames, filenames in os.walk('/tmp/' + subj_id):
                 for filename in fnmatch.filter(filenames, '*.dcm'):
                     matches.append(os.path.join(root, filename))
-                if len(matches[0].split('/tmp/' + subj_id + '/')[1].split('/')) == 1:
-                    recursion_pattern = '*'
-                elif len(matches[0].split('/tmp/' + subj_id + '/')[1].split('/')) == 2:
-                    recursion_pattern = '*/*'
-                elif len(matches[0].split('/tmp/' + subj_id + '/')[1].split('/')) == 3:
-                    recursion_pattern = '*/*/*'
-                elif len(matches[0].split('/tmp/' + subj_id + '/')[1].split('/')) == 4:
-                    recursion_pattern = '*/*/*/*'
-                elif len(matches[0].split('/tmp/' + subj_id + '/')[1].split('/')) == 5:
-                    recursion_pattern = '*/*/*/*/*'
-                convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/%s -s %s  --overwrite -o %s/BIDS_output' % ("/tmp", recursion_pattern,  subj_id, output_dir)
+            if len(matches[0].split('/tmp/' + subj_id + '/')[1].split('/')) == 1:
+                recursion_pattern = '*'
+            elif len(matches[0].split('/tmp/' + subj_id + '/')[1].split('/')) == 2:
+                recursion_pattern = '*/*'
+            elif len(matches[0].split('/tmp/' + subj_id + '/')[1].split('/')) == 3:
+                recursion_pattern = '*/*/*'
+            elif len(matches[0].split('/tmp/' + subj_id + '/')[1].split('/')) == 4:
+                recursion_pattern = '*/*/*/*'
+            elif len(matches[0].split('/tmp/' + subj_id + '/')[1].split('/')) == 5:
+                recursion_pattern = '*/*/*/*/*'
+            convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/%s -s %s  --overwrite -o %s/BIDS_output' % ("/tmp", recursion_pattern,  subj_id, output_dir)
     elif len(glob(dicom_dir + "/*" + subj_id + "*")) > 1:
         raise Exception("There are multiple directories within dicom directory: " + dicom_dir + " with the same subject id: " + subj_id + ". Either change the subject id or enter a session id. Must exit.")
     else:
@@ -81,16 +82,16 @@ elif ses_id and not subj_id:
             for root, dirnames, filenames in os.walk('/tmp/' + ses_id):
                 for filename in fnmatch.filter(filenames, '*.dcm'):
                     matches.append(os.path.join(root, filename))
-                if len(matches[0].split('/tmp/' + ses_id + '/')[1].split('/')) == 1:
-                    recursion_pattern = '*'
-                elif len(matches[0].split('/tmp/' + ses_id + '/')[1].split('/')) == 2:
-                    recursion_pattern = '*/*'
-                elif len(matches[0].split('/tmp/' + ses_id + '/')[1].split('/')) == 3:
-                    recursion_pattern = '*/*/*'
-                elif len(matches[0].split('/tmp/' + ses_id + '/')[1].split('/')) == 4:
-                    recursion_pattern = '*/*/*/*'
-                elif len(matches[0].split('/tmp/' + ses_id + '/')[1].split('/')) == 5:
-                    recursion_pattern = '*/*/*/*/*'
+            if len(matches[0].split('/tmp/' + ses_id + '/')[1].split('/')) == 1:
+                recursion_pattern = '*'
+            elif len(matches[0].split('/tmp/' + ses_id + '/')[1].split('/')) == 2:
+                recursion_pattern = '*/*'
+            elif len(matches[0].split('/tmp/' + ses_id + '/')[1].split('/')) == 3:
+                recursion_pattern = '*/*/*'
+            elif len(matches[0].split('/tmp/' + ses_id + '/')[1].split('/')) == 4:
+                recursion_pattern = '*/*/*/*'
+            elif len(matches[0].split('/tmp/' + ses_id + '/')[1].split('/')) == 5:
+                recursion_pattern = '*/*/*/*/*'
 
             convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/%s -s %s --overwrite -o %s/BIDS_output' % ("/tmp", recursion_pattern, ses_id, output_dir)
     elif len(glob(dicom_dir + "/*" + ses_id + "*")) > 1:
@@ -108,16 +109,16 @@ elif ses_id and subj_id:
             for root, dirnames, filenames in os.walk('/tmp/' + subj_id  + "/" + ses_id):
                 for filename in fnmatch.filter(filenames, '*.dcm'):
                     matches.append(os.path.join(root, filename))
-                if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
-                    recursion_pattern = '*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
-                    recursion_pattern = '*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
-                    recursion_pattern = '*/*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
-                    recursion_pattern = '*/*/*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
-                    recursion_pattern = '*/*/*/*/*'
+            if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
+                recursion_pattern = '*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
+                recursion_pattern = '*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
+                recursion_pattern = '*/*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
+                recursion_pattern = '*/*/*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
+                recursion_pattern = '*/*/*/*/*'
             convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp", recursion_pattern, subj_id, ses_id, output_dir)
     
     elif len(glob(dicom_dir + "/*" + ses_id + "*/*" + subj_id + "*")) == 1:
@@ -127,16 +128,16 @@ elif ses_id and subj_id:
             for root, dirnames, filenames in os.walk('/tmp/' + subj_id  + "/" + ses_id):
                 for filename in fnmatch.filter(filenames, '*.dcm'):
                     matches.append(os.path.join(root, filename))
-                if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
-                    recursion_pattern = '*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
-                    recursion_pattern = '*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
-                    recursion_pattern = '*/*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
-                    recursion_pattern = '*/*/*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
-                    recursion_pattern = '*/*/*/*/*'
+            if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
+                recursion_pattern = '*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
+                recursion_pattern = '*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
+                recursion_pattern = '*/*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
+                recursion_pattern = '*/*/*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
+                recursion_pattern = '*/*/*/*/*'
             convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp", recursion_pattern, ses_id, subj_id, output_dir)
     
     elif len(glob(dicom_dir + "/*" + subj_id + "*")) == 1:
@@ -146,16 +147,16 @@ elif ses_id and subj_id:
             for root, dirnames, filenames in os.walk('/tmp/' + subj_id  + "/" + ses_id):
                 for filename in fnmatch.filter(filenames, '*.dcm'):
                     matches.append(os.path.join(root, filename))
-                if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
-                    recursion_pattern = '*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
-                    recursion_pattern = '*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
-                    recursion_pattern = '*/*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
-                    recursion_pattern = '*/*/*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
-                    recursion_pattern = '*/*/*/*/*'
+            if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
+                recursion_pattern = '*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
+                recursion_pattern = '*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
+                recursion_pattern = '*/*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
+                recursion_pattern = '*/*/*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
+                recursion_pattern = '*/*/*/*/*'
             convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp", recursion_pattern, subj_id, ses_id, output_dir)
 
     elif len(glob(dicom_dir + "/*" + ses_id + "*")) == 1:
@@ -165,16 +166,16 @@ elif ses_id and subj_id:
             for root, dirnames, filenames in os.walk('/tmp/' + subj_id  + "/" + ses_id):
                 for filename in fnmatch.filter(filenames, '*.dcm'):
                     matches.append(os.path.join(root, filename))
-                if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
-                    recursion_pattern = '*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
-                    recursion_pattern = '*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
-                    recursion_pattern = '*/*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
-                    recursion_pattern = '*/*/*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
-                    recursion_pattern = '*/*/*/*/*'
+            if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
+                recursion_pattern = '*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
+                recursion_pattern = '*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
+                recursion_pattern = '*/*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
+                recursion_pattern = '*/*/*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
+                recursion_pattern = '*/*/*/*/*'
             convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp", recursion_pattern, subj_id, ses_id, output_dir)
     
     elif len(glob(dicom_dir + "/*" + subj_id + "*" + ses_id + "*")) == 1:
@@ -184,16 +185,16 @@ elif ses_id and subj_id:
             for root, dirnames, filenames in os.walk('/tmp/' + subj_id  + "/" + ses_id):
                 for filename in fnmatch.filter(filenames, '*.dcm'):
                     matches.append(os.path.join(root, filename))
-                if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
-                    recursion_pattern = '*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
-                    recursion_pattern = '*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
-                    recursion_pattern = '*/*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
-                    recursion_pattern = '*/*/*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
-                    recursion_pattern = '*/*/*/*/*'
+            if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
+                recursion_pattern = '*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
+                recursion_pattern = '*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
+                recursion_pattern = '*/*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
+                recursion_pattern = '*/*/*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
+                recursion_pattern = '*/*/*/*/*'
             convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp", recursion_pattern, subj_id, ses_id, output_dir)
 
     elif len(glob(dicom_dir + "/*" + ses_id + "*" + subj_id + "*")) == 1:
@@ -203,16 +204,16 @@ elif ses_id and subj_id:
             for root, dirnames, filenames in os.walk('/tmp/' + subj_id  + "/" + ses_id):
                 for filename in fnmatch.filter(filenames, '*.dcm'):
                     matches.append(os.path.join(root, filename))
-                if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
-                    recursion_pattern = '*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
-                    recursion_pattern = '*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
-                    recursion_pattern = '*/*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
-                    recursion_pattern = '*/*/*/*'
-                elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
-                    recursion_pattern = '*/*/*/*/*'
+            if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
+                recursion_pattern = '*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
+                recursion_pattern = '*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
+                recursion_pattern = '*/*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
+                recursion_pattern = '*/*/*/*'
+            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
+                recursion_pattern = '*/*/*/*/*'
             convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp", recursion_pattern, subj_id, ses_id, output_dir)
             
     else:
