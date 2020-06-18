@@ -47,27 +47,26 @@ else:
         convert_type = ' -c dcm2niix -f %s -b' % heuristics_script
 
 # try to determine how data is organized within dicom directory, place within /tmp directory, and determine what heudiconv format (cross-sectional, longitudinal should look like)
-
 # just subj_id
 if subj_id and not ses_id:
     if len(glob(dicom_dir + "/*" + subj_id + "*")) == 1:
         if os.path.isdir(glob(dicom_dir + "/*" + subj_id + "*")[0]):
-            shutil.copytree(glob(dicom_dir + "/*" + subj_id + "*")[0],"/tmp/" + subj_id)
+            dicom_session_folder = glob(dicom_dir + "/*" + subj_id + "*")[0]
             matches = []
-            for root, dirnames, filenames in os.walk('/tmp/' + subj_id):
+            for root, dirnames, filenames in os.walk(dicom_session_folder):
                 for filename in fnmatch.filter(filenames, '*.dcm'):
                     matches.append(os.path.join(root, filename))
-            if len(matches[0].split('/tmp/' + subj_id + '/')[1].split('/')) == 1:
+            if len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 1:
                 recursion_pattern = '*'
-            elif len(matches[0].split('/tmp/' + subj_id + '/')[1].split('/')) == 2:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 2:
                 recursion_pattern = '*/*'
-            elif len(matches[0].split('/tmp/' + subj_id + '/')[1].split('/')) == 3:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 3:
                 recursion_pattern = '*/*/*'
-            elif len(matches[0].split('/tmp/' + subj_id + '/')[1].split('/')) == 4:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 4:
                 recursion_pattern = '*/*/*/*'
-            elif len(matches[0].split('/tmp/' + subj_id + '/')[1].split('/')) == 5:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/%s -s %s  --overwrite -o %s/BIDS_output' % ("/tmp", recursion_pattern,  subj_id, output_dir)
+            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{subject}*/%s -s %s  --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern,  subj_id, output_dir)
     elif len(glob(dicom_dir + "/*" + subj_id + "*")) > 1:
         raise Exception("There are multiple directories within dicom directory: " + dicom_dir + " with the same subject id: " + subj_id + ". Either change the subject id or enter a session id. Must exit.")
     else:
@@ -77,23 +76,23 @@ if subj_id and not ses_id:
 elif ses_id and not subj_id:
     if len(glob(dicom_dir + "/*" + ses_id + "*")) == 1:
         if os.path.isdir(glob(dicom_dir + "/*" + ses_id + "*")[0]):
-            shutil.copytree(glob(dicom_dir + "/*" + ses_id + "*")[0],"/tmp/" + ses_id)
+            dicom_session_folder = glob(dicom_dir + "/*" + ses_id + "*")[0]
             matches = []
-            for root, dirnames, filenames in os.walk('/tmp/' + ses_id):
+            for root, dirnames, filenames in os.walk(dicom_session_folder):
                 for filename in fnmatch.filter(filenames, '*.dcm'):
                     matches.append(os.path.join(root, filename))
-            if len(matches[0].split('/tmp/' + ses_id + '/')[1].split('/')) == 1:
+            if len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 1:
                 recursion_pattern = '*'
-            elif len(matches[0].split('/tmp/' + ses_id + '/')[1].split('/')) == 2:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 2:
                 recursion_pattern = '*/*'
-            elif len(matches[0].split('/tmp/' + ses_id + '/')[1].split('/')) == 3:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 3:
                 recursion_pattern = '*/*/*'
-            elif len(matches[0].split('/tmp/' + ses_id + '/')[1].split('/')) == 4:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 4:
                 recursion_pattern = '*/*/*/*'
-            elif len(matches[0].split('/tmp/' + ses_id + '/')[1].split('/')) == 5:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
 
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/%s -s %s --overwrite -o %s/BIDS_output' % ("/tmp", recursion_pattern, ses_id, output_dir)
+            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{session}*/%s -s %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, ses_id, output_dir)
     elif len(glob(dicom_dir + "/*" + ses_id + "*")) > 1:
         raise Exception("There are multiple directories within dicom directory: " + dicom_dir + " with the same subject id: " + ses_id + ". Either change the subject id or enter a session id. Must exit.")
     else:
@@ -101,121 +100,120 @@ elif ses_id and not subj_id:
 
 # subject id and session id
 elif ses_id and subj_id:
-
     if len(glob(dicom_dir + "/*" + subj_id + "*/*" + ses_id + "*")) == 1:
         if os.path.isdir(glob(dicom_dir + "/*" + subj_id + "*/*" + ses_id + "*")[0]):
-            shutil.copytree(glob(dicom_dir + "/*" + subj_id + "*/*" + ses_id + "*")[0], "/tmp/" + subj_id + "/" + ses_id)
+            dicom_session_folder = glob(dicom_dir + "/*" + subj_id + "*/*" + ses_id + "*")[0]       
             matches = []
-            for root, dirnames, filenames in os.walk('/tmp/' + subj_id  + "/" + ses_id):
+            for root, dirnames, filenames in os.walk(dicom_session_folder):
                 for filename in fnmatch.filter(filenames, '*.dcm'):
                     matches.append(os.path.join(root, filename))
-            if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
+            if len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 1:
                 recursion_pattern = '*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 2:
                 recursion_pattern = '*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 3:
                 recursion_pattern = '*/*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 4:
                 recursion_pattern = '*/*/*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp", recursion_pattern, subj_id, ses_id, output_dir)
+            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{subject}*/*{session}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
     
     elif len(glob(dicom_dir + "/*" + ses_id + "*/*" + subj_id + "*")) == 1:
         if os.path.isdir(glob(dicom_dir + "/*" + ses_id + "*/*" + subj_id + "*")[0]):
-            shutil.copytree(glob(dicom_dir + "/*" + ses_id + "*/*" + subj_id + "*")[0],"/tmp/" + subj_id)
+            dicom_session_folder = glob(dicom_dir + "/*" + ses_id + "*/*" + subj_id + "*")[0]     
             matches = []
-            for root, dirnames, filenames in os.walk('/tmp/' + subj_id  + "/" + ses_id):
+            for root, dirnames, filenames in os.walk(dicom_session_folder):
                 for filename in fnmatch.filter(filenames, '*.dcm'):
                     matches.append(os.path.join(root, filename))
-            if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
+            if len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 1:
                 recursion_pattern = '*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 2:
                 recursion_pattern = '*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 3:
                 recursion_pattern = '*/*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 4:
                 recursion_pattern = '*/*/*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp", recursion_pattern, ses_id, subj_id, output_dir)
-    
-    elif len(glob(dicom_dir + "/*" + subj_id + "*")) == 1:
-        if os.path.isdir(glob(dicom_dir + "/*" + subj_id + "*")[0]):
-            shutil.copytree(glob(dicom_dir + "/*" + subj_id + "*")[0],"/tmp/" + subj_id + "/" + ses_id)
-            matches = []
-            for root, dirnames, filenames in os.walk('/tmp/' + subj_id  + "/" + ses_id):
-                for filename in fnmatch.filter(filenames, '*.dcm'):
-                    matches.append(os.path.join(root, filename))
-            if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
-                recursion_pattern = '*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
-                recursion_pattern = '*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
-                recursion_pattern = '*/*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
-                recursion_pattern = '*/*/*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
-                recursion_pattern = '*/*/*/*/*'
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp", recursion_pattern, subj_id, ses_id, output_dir)
-
-    elif len(glob(dicom_dir + "/*" + ses_id + "*")) == 1:
-        if os.path.isdir(glob(dicom_dir + "/*" + ses_id + "*")[0]):
-            shutil.copytree(glob(dicom_dir + "/*" + ses_id + "*")[0], "/tmp/" + subj_id + "/" + ses_id)
-            matches = []
-            for root, dirnames, filenames in os.walk('/tmp/' + subj_id  + "/" + ses_id):
-                for filename in fnmatch.filter(filenames, '*.dcm'):
-                    matches.append(os.path.join(root, filename))
-            if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
-                recursion_pattern = '*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
-                recursion_pattern = '*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
-                recursion_pattern = '*/*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
-                recursion_pattern = '*/*/*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
-                recursion_pattern = '*/*/*/*/*'
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp", recursion_pattern, subj_id, ses_id, output_dir)
+            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{session}*/*{subject}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, ses_id, subj_id, output_dir)
     
     elif len(glob(dicom_dir + "/*" + subj_id + "*" + ses_id + "*")) == 1:
         if os.path.isdir(glob(dicom_dir + "/*" + subj_id + "*" + ses_id + "*")[0]):
-            shutil.copytree(glob(dicom_dir + "/*" + subj_id + "*" + ses_id + "*")[0], "/tmp/" + subj_id + "/" + ses_id)
+            dicom_session_folder = glob(dicom_dir + "/*" + subj_id + "*" + ses_id + "*")[0]
             matches = []
-            for root, dirnames, filenames in os.walk('/tmp/' + subj_id  + "/" + ses_id):
+            for root, dirnames, filenames in os.walk(dicom_session_folder):
                 for filename in fnmatch.filter(filenames, '*.dcm'):
                     matches.append(os.path.join(root, filename))
-            if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
+            if len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 1:
                 recursion_pattern = '*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 2:
                 recursion_pattern = '*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 3:
                 recursion_pattern = '*/*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 4:
                 recursion_pattern = '*/*/*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp", recursion_pattern, subj_id, ses_id, output_dir)
+            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{subject}*{session}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
 
     elif len(glob(dicom_dir + "/*" + ses_id + "*" + subj_id + "*")) == 1:
         if os.path.isdir(glob(dicom_dir + "/*" + ses_id + "*" + subj_id + "*")[0]):
-            shutil.copytree(glob(dicom_dir + "/*" + ses_id + "*" + subj_id + "*")[0], "/tmp/" + subj_id + "/" + ses_id)
+            dicom_session_folder = glob(dicom_dir + "/*" + ses_id + "*" + subj_id + "*")[0]
             matches = []
-            for root, dirnames, filenames in os.walk('/tmp/' + subj_id  + "/" + ses_id):
+            for root, dirnames, filenames in os.walk(dicom_session_folder):
                 for filename in fnmatch.filter(filenames, '*.dcm'):
                     matches.append(os.path.join(root, filename))
-            if len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 1:
+            if len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 1:
                 recursion_pattern = '*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 2:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 2:
                 recursion_pattern = '*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 3:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 3:
                 recursion_pattern = '*/*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 4:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 4:
                 recursion_pattern = '*/*/*/*'
-            elif len(matches[0].split('/tmp/' + subj_id  + "/" + ses_id + '/')[1].split('/')) == 5:
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % ("/tmp", recursion_pattern, subj_id, ses_id, output_dir)
-            
+            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{session}*{subject}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
+    
+    elif len(glob(dicom_dir + "/*" + subj_id + "*")) == 1:
+        if os.path.isdir(glob(dicom_dir + "/*" + subj_id + "*")[0]):
+            dicom_session_folder = glob(dicom_dir + "/*" + subj_id + "*")[0]
+            matches = []
+            for root, dirnames, filenames in os.walk(dicom_session_folder):
+                for filename in fnmatch.filter(filenames, '*.dcm'):
+                    matches.append(os.path.join(root, filename))
+            if len(matches[0].split(dicom_session_folder  + "/")[1].split('/')) == 1:
+                recursion_pattern = '*'
+            elif len(matches[0].split(dicom_session_folder  + "/")[1].split('/')) == 2:
+                recursion_pattern = '*/*'
+            elif len(matches[0].split(dicom_session_folder  + "/")[1].split('/')) == 3:
+                recursion_pattern = '*/*/*'
+            elif len(matches[0].split(dicom_session_folder  + "/")[1].split('/')) == 4:
+                recursion_pattern = '*/*/*/*'
+            elif len(matches[0].split(dicom_session_folder  + "/")[1].split('/')) == 5:
+                recursion_pattern = '*/*/*/*/*'
+            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{subject}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
+
+    elif len(glob(dicom_dir + "/*" + ses_id + "*")) == 1:
+        if os.path.isdir(glob(dicom_dir + "/*" + ses_id + "*")[0]):
+            dicom_session_folder = glob(dicom_dir + "/*" + ses_id + "*")[0]
+            matches = []
+            for root, dirnames, filenames in os.walk(dicom_session_folder):
+                for filename in fnmatch.filter(filenames, '*.dcm'):
+                    matches.append(os.path.join(root, filename))
+            if len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 1:
+                recursion_pattern = '*'
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 2:
+                recursion_pattern = '*/*'
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 3:
+                recursion_pattern = '*/*/*'
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 4:
+                recursion_pattern = '*/*/*/*'
+            elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
+                recursion_pattern = '*/*/*/*/*'
+            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{session}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
+    
     else:
         raise Exception("Cannot find a directory within dicom directory: " + dicom_dir + " with a combination of subject id: " + subj_id + ", or session id: " + ses_id + ". Must exit.")
 
@@ -224,15 +222,6 @@ else:
     raise Exception("Neither subject id nor session id arguments were entered. Must exit.")
 
 os.system(convert_format + convert_type)
-
-# once conversion is finished delete data from tmp
-if subj_id:
-    if os.path.isdir("/tmp/" + subj_id):
-        shutil.rmtree("/tmp/" + subj_id)
-elif ses_id:
-    if os.path.isdir("/tmp/" + ses_id):
-        shutil.rmtree("/tmp/" + ses_id)
-
 
 # Now change IntendedFor field within fmaps
 if not dry_run:
