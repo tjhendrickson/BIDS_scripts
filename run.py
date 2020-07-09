@@ -13,6 +13,7 @@ import pdb
 #book keeping and global variables
 parser = argparse.ArgumentParser(description='Script that controls BIDS conversion for individual studies')
 parser.add_argument('--output_dir', help="The directory that the BIDS data will be outputted to",required=True)
+parser.add_argumemntt('--tmp_dir', help="The directory that DICOM data will  be temporarily stored in.", required=True)
 parser.add_argument('--dicom_dir', help='The directory that houses dicom directories/files.',required=True)
 parser.add_argument('--ses_id', help="scanning session id")
 parser.add_argument('--subj_id', help="subject id")
@@ -22,11 +23,15 @@ parser.add_argument('--dry_run', action='store_true', help="Dry run. A dicominfo
 
 args = parser.parse_args()
 dicom_dir = args.dicom_dir
+tmp_dir = args.tmp_dir
 ses_id = args.ses_id
 subj_id = args.subj_id
 heuristic = args.heuristic
 dry_run = args.dry_run
 output_dir = args.output_dir
+
+# change temporary dir to different location based on --tmp_dir flag
+os.system('export TMPDIR='+tmp_dir)
 
 # make bids directory if it does not exist
 if not os.path.exists(os.path.join(output_dir, "BIDS_output")):
