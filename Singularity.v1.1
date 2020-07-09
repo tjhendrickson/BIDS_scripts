@@ -29,6 +29,7 @@ From: ReproNim/reproin:0.5.3.1
 	# Make local folders
 	mkdir /output_dir 
     mkdir /dicom_dir
+    mkdir /tmp_dir 
     touch /heuristic.py
 
 	
