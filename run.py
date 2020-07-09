@@ -13,7 +13,7 @@ import pdb
 #book keeping and global variables
 parser = argparse.ArgumentParser(description='Script that controls BIDS conversion for individual studies')
 parser.add_argument('--output_dir', help="The directory that the BIDS data will be outputted to",required=True)
-parser.add_argumemntt('--tmp_dir', help="The directory that DICOM data will  be temporarily stored in.", required=True)
+parser.add_argumemnt('--tmp_dir', help="The directory that DICOM data will  be temporarily stored in.", required=True)
 parser.add_argument('--dicom_dir', help='The directory that houses dicom directories/files.',required=True)
 parser.add_argument('--ses_id', help="scanning session id")
 parser.add_argument('--subj_id', help="subject id")
