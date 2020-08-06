@@ -97,7 +97,7 @@ elif ses_id and not subj_id:
             elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
 
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{session}*/%s -s %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, ses_id, output_dir)
+            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{subject}*/%s -s %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, ses_id, output_dir)
     elif len(glob(dicom_dir + "/*" + ses_id + "*")) > 1:
         raise Exception("There are multiple directories within dicom directory: " + dicom_dir + " with the same subject id: " + ses_id + ". Either change the subject id or enter a session id. Must exit.")
     else:
@@ -203,6 +203,10 @@ elif ses_id and subj_id:
     elif len(glob(dicom_dir + "/*" + ses_id + "*")) == 1:
         if os.path.isdir(glob(dicom_dir + "/*" + ses_id + "*")[0]):
             dicom_session_folder = glob(dicom_dir + "/*" + ses_id + "*")[0]
+            if os.path.isdir(os.path.join(tmp_dir,subj_id,ses_id)):
+                shutil.rmtree(os.path.join(tmp_dir,subj_id,ses_id))
+            shutil.copytree(dicom_session_folder,os.path.join(tmp_dir,subj_id,ses_id))
+            dicom_session_folder = os.path.join(tmp_dir,subj_id,ses_id)
             matches = []
             for root, dirnames, filenames in os.walk(dicom_session_folder):
                 for filename in fnmatch.filter(filenames, '*.dcm'):
@@ -217,7 +221,7 @@ elif ses_id and subj_id:
                 recursion_pattern = '*/*/*/*'
             elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{session}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
+            convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/%s -s %s -ss %s --overwrite -o %s/BIDS_output ' % (tmp_dir, recursion_pattern, subj_id, ses_id, output_dir)
     
     else:
         raise Exception("Cannot find a directory within dicom directory: " + dicom_dir + " with a combination of subject id: " + subj_id + ", or session id: " + ses_id + ". Must exit.")
@@ -225,7 +229,7 @@ elif ses_id and subj_id:
 # neither subject id or session id
 else:
     raise Exception("Neither subject id nor session id arguments were entered. Must exit.")
-
+pdb.set_trace()
 os.system(convert_format + convert_type)
 
 # Now change IntendedFor field within fmaps
