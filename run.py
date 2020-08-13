@@ -203,9 +203,9 @@ elif ses_id and subj_id:
     elif len(glob(dicom_dir + "/*" + ses_id + "*")) == 1:
         if os.path.isdir(glob(dicom_dir + "/*" + ses_id + "*")[0]):
             dicom_session_folder = glob(dicom_dir + "/*" + ses_id + "*")[0]
-            if os.path.isdir(os.path.join(tmp_dir,subj_id,ses_id)):
-                shutil.rmtree(os.path.join(tmp_dir,subj_id,ses_id))
-            shutil.copytree(dicom_session_folder,os.path.join(tmp_dir,subj_id,ses_id))
+            # if os.path.isdir(os.path.join(tmp_dir,subj_id,ses_id)):
+            #     shutil.rmtree(os.path.join(tmp_dir,subj_id,ses_id))
+            # shutil.copytree(dicom_session_folder,os.path.join(tmp_dir,subj_id,ses_id))
             dicom_session_folder = os.path.join(tmp_dir,subj_id,ses_id)
             matches = []
             for root, dirnames, filenames in os.walk(dicom_session_folder):
