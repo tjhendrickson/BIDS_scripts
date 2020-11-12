@@ -229,7 +229,6 @@ elif ses_id and subj_id:
 # neither subject id or session id
 else:
     raise Exception("Neither subject id nor session id arguments were entered. Must exit.")
-pdb.set_trace()
 os.system(convert_format + convert_type)
 
 # Now change IntendedFor field within fmaps
