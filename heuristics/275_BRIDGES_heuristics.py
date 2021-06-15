@@ -15,7 +15,6 @@ def infotodict(seqinfo):
     seqitem: run number during scanning
     subindex: sub index within group
     """
-    pdb.set_trace()
     t1 = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_T1w')
     t2 = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_T2w')
 
@@ -25,16 +24,20 @@ def infotodict(seqinfo):
     task = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-{TaskName}_run-{item:02d}_bold')
     sbref_task = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-{TaskName}_run-{item:02d}_sbref')
 
-    dwi = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_dwi')
-    sbref_dwi = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_sbref')
+    dwi = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_dir-{dir}_run-{item:02d}_dwi')
+    sbref_dwi = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_dir-{dir}_run-{item:02d}_sbref')
 
-    spinecho_map_bold = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_dir-{dir}_run-{item:02d}_epi')
+    spinecho_map_bold = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_acq-{acq}_dir-{dir}_run-{item:02d}_epi')
 
-    info = {t1: [], t2: [], rest: [], dwi: [], spinecho_map_bold: [], sbref_rest: [], sbref_dwi: [], task: [], sbref_task: []}
+    gradientecho_map_bold = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_acq-{acq}_dir-{dir}_run-{item:02d}_epi')
+
+    info = {t1: [], t2: [], rest: [], dwi: [], spinecho_map_bold: [], gradientecho_map_bold: [], sbref_rest: [], sbref_dwi: [], task: [], sbref_task: []}
 
     for idx, s in enumerate(seqinfo):
+        if idx + 1 < len(seqinfo) - 1:
+            s_next = seqinfo[idx+1]
         if (s.dim3 == 208) and ('NORM' in s.image_type):
-            if 'T1w_MPR_vNav_4e_RMS' in s.dcm_dir_name:
+            if ('T1w_MPR_vNav_4e_RMS' in s.dcm_dir_name):
                 acq = 'MPRvNav4eRMS'
                 info[t1].append({'item': s.series_id, 'acq': acq})
             else:
@@ -42,12 +45,14 @@ def infotodict(seqinfo):
                 info[t2].append({'item': s.series_id, 'acq': acq})
         if (s.dim4 == 159) and ('DWI' in s.protocol_name):
             if 'REV_AP' in s.protocol_name:
-                acq = 'PA'
+                d = 'PA'
             else:
-                acq = 'AP'
-                info[dwi].append({'item': s.series_id, 'acq': acq})
+                d = 'AP'
+            info[dwi].append({'item': s.series_id, 'dir': d})
         if (s.dim4 == 912) and ('REST' in s.protocol_name):
-                info[rest].append({'item': s.series_id})
+            info[rest].append({'item': s.series_id})
+        if (s.dim4 == 10) and ('REST_AP' in s.protocol_name):
+            info[gradientecho_map_bold].append({'item': s.series_id, 'acq': 'gradientecho', 'dir': 'AP'})
         if (s.dim4 >= 340 and s.dim4 <= 912) and not ('REST' in s.protocol_name):
             if 'HARIRI' in s.protocol_name:
                 TaskName = 'HARIRI'
@@ -65,19 +70,12 @@ def infotodict(seqinfo):
                 TaskName = 'SVC2'
                 info[task].append({'item': s.series_id, 'TaskName': TaskName})
 
-        if (s.dim4 == 1) and ('PA' in s.protocol_name or 'AP' in s.protocol_name):
-            if 'SpinEchoFieldMap' in s.protocol_name:
-                if 'PA' in s.protocol_name or 'REV_AP' in s.protocol_name:
-                    info[spinecho_map_bold].append({'item': s.series_id, 'acq': 'SE', 'dir': 'PA'})
-                else:
-                    info[spinecho_map_bold].append({'item': s.series_id, 'acq': 'SE', 'dir': 'AP'})
-            if 'REST' in s.protocol_name:
-                if 'PA' in s.protocol_name or 'REV_AP' in s.protocol_name:
-                    acq = 'PA'
-                else:
-                    acq = 'AP'
-                info[sbref_rest].append({'item': s.series_id, 'acq': acq})
-            if 'HARIRI' in s.protocol_name:
+        if 'SBRef' in s.dcm_dir_name:
+            if 'REST_REV_AP' in s.protocol_name:
+                info[sbref_rest].append({'item': s.series_id})
+            elif 'REST_AP' in s.protocol_name:
+                info[gradientecho_map_bold].append({'item': s.series_id, 'acq': 'gradientechosbref', 'dir': 'AP'})
+            elif 'HARIRI' in s.protocol_name:
                 TaskName = 'HARIRI'
                 info[sbref_task].append({'item': s.series_id, 'TaskName': TaskName})
             elif 'GNG1' in s.protocol_name:
@@ -92,12 +90,19 @@ def infotodict(seqinfo):
             elif 'SVC2' in s.protocol_name:
                 TaskName = 'SVC2'
                 info[sbref_task].append({'item': s.series_id, 'TaskName': TaskName})
-            if 'DWI' in s.protocol_name:
+            elif 'DWI' in s.protocol_name:
                 if 'REV_AP' in s.protocol_name:
-                    acq = 'PA'
+                    d = 'PA'
                 else:
-                    acq = 'AP'
-                info[sbref_dwi].append({'item': s.series_id, 'acq': acq})
+                    d = 'AP'
+                info[sbref_dwi].append({'item': s.series_id, 'dir': d})
+
+        if 'SpinEchoFieldMap' in s.protocol_name:
+                if ('PA' in s.protocol_name or 'REV_AP' in s.protocol_name):
+                    info[spinecho_map_bold].append({'item': s.series_id, 'acq': 'spinecho', 'dir': 'PA'})
+                else:
+                    info[spinecho_map_bold].append({'item': s.series_id, 'acq': 'spinecho', 'dir': 'AP'})
+        dir = ""
         acq = ""
         TaskName = ""
     return info

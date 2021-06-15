@@ -182,12 +182,14 @@ elif ses_id and subj_id:
             convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{session}*{subject}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
     
     elif len(glob(dicom_dir + "/*" + subj_id + "*")) == 1:
+        pdb.set_trace()
         if os.path.isdir(glob(dicom_dir + "/*" + subj_id + "*")[0]):
             dicom_session_folder = glob(dicom_dir + "/*" + subj_id + "*")[0]
             matches = []
             for root, dirnames, filenames in os.walk(dicom_session_folder):
                 for filename in fnmatch.filter(filenames, '*.dcm'):
                     matches.append(os.path.join(root, filename))
+            pdb.set_trace()
             if len(matches[0].split(dicom_session_folder  + "/")[1].split('/')) == 1:
                 recursion_pattern = '*'
             elif len(matches[0].split(dicom_session_folder  + "/")[1].split('/')) == 2:
