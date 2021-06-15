@@ -5,9 +5,9 @@ This repository contains scripts that will assist in the conversion of raw DICOM
 
 
 ### Container Hosting
-This app is maintained on singularityhub [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/1332). Pull the most recent container below, (**NOTE: you only have to do this once!**):
+ Pull the most recent container below, (**NOTE: you only have to do this once!**):
 ```
-singularity pull shub://tjhendrickson/BIDS_scripts:v1.1
+singularity pull shub://tjhendrickson/BIDS_scripts:latest
 ```
 
 ### Singularity Usage

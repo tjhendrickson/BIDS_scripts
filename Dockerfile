@@ -1,31 +1,38 @@
-# Read in heudiconv docker image
-FROM nipy/heudiconv
+# Read in ubuntu based docker image
+FROM ubuntu:xenial-20210429
 
 #Environment
 ENV DEBIAN_FRONTEND=noninteractive
-
-# Install python and nibabel
-RUN apt-get update -y && \
-    apt-get install -y python3 python3-pip && \
-    pip3 install nibabel && \
-    apt-get remove -y python3-pip && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-# Install python Dependencies
-RUN apt-get update -y && apt-get install -y --no-install-recommends python-pip python-six python-nibabel python-setuptools
-RUN pip install pybids==0.5.1
-RUN pip install --upgrade pybids
-
-## Install the validator
-RUN apt-get update -y && \
-    apt-get install -y curl && \
-    curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
-    apt-get remove -y curl && \
-    apt-get install -y nodejs
-
-RUN npm install -g bids-validator@0.25.7
-
 ENV PYTHONPATH=""
+
+# Install needed UBUNTU packages
+RUN apt-get update && \
+    apt-get install -y curl git
+
+# Install python 3.7 most recent stable miniconda version 4.9.2
+RUN echo "Installing miniconda ..." && \
+    curl -sSLO https://repo.anaconda.com/miniconda/Miniconda3-py37_4.9.2-Linux-x86_64.sh && \
+    bash Miniconda3-py37_4.9.2-Linux-x86_64.sh -b -p /usr/local/miniconda && \
+    rm Miniconda3-py37_4.9.2-Linux-x86_64.sh 
+
+# Add miniconda to path and set other environment variables
+ENV PATH="/usr/local/miniconda/bin:$PATH" \
+    CPATH="/usr/local/miniconda/include:$CPATH" \
+    LANG="C.UTF-8" \
+    LC_ALL="C.UTF-8" \
+    PYTHONNOUSERSITE=1
+
+# download heudiconv repo
+RUN mkdir github && \
+    cd github && \
+    git clone https://github.com/nipy/heudiconv.git && \
+    cd heudiconv && \
+    git checkout tags/debian/0.9.0-2 -b debian-0.9.0-2
+
+# create conda environment
+RUN conda create -n heudiconv
+# Install Dependencies
+SHELL ["conda", "run", "-n", "heudiconv", "/bin/bash", "-c", "pip", "install", "-r", "requirements.txt"]
 
 COPY run.py /run.py
 COPY heuristics /heuristics
