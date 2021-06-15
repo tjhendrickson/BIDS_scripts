@@ -30,6 +30,8 @@ def infotodict(seqinfo):
     info = {t1: [], t2: [], task: [], rest: [], dwi: [], spinecho_map_bold: [], sbref_rest: [], sbref_task: []}
 
     for idx, s in enumerate(seqinfo):
+        if idx + 1 < len(seqinfo) - 1:
+            s_next = seqinfo[idx+1]
         if (s.dim3 == 208) and ('NORM' in s.image_type):
             if 'T1w' in s.dcm_dir_name:
                 acq = 'T1MPR'
@@ -37,11 +39,11 @@ def infotodict(seqinfo):
             else:
                 acq = 'T2SPC'
                 info[t2].append({'item': s.series_id, 'acq': acq})
-        if (s.dim4 >= 79) and (('DWI_79dir_b1000_2000_REV_PA' in s.protocol_name) or ('DWI_79dir_b1000_2000_AP' in s.protocol_name)):
+        elif (s.dim4 >= 79) and (('DWI_79dir_b1000_2000_REV_PA' in s.protocol_name) or ('DWI_79dir_b1000_2000_AP' in s.protocol_name)):
             info[dwi].append({'item': s.series_id, 'acq': 'AP'})
-        if (s.dim4 >= 79) and ('DWI_79dir_b1000_2000_PA' in s.protocol_name):
+        elif (s.dim4 >= 79) and ('DWI_79dir_b1000_2000_PA' in s.protocol_name):
             info[dwi].append({'item': s.series_id, 'acq': 'PA'})
-        if (s.dim4 == 520):
+        elif (s.dim4 == 520):
             if ('REST_EC' in s.protocol_name):
                 acq = 'eyesclosedPA'
             elif ('REST_EO_BEFORE' in s.protocol_name):
@@ -49,10 +51,10 @@ def infotodict(seqinfo):
             elif ('REST_EO_AFTER' in s.protocol_name):
                 acq = 'eyesopenafterPA'
             info[rest].append({'item': s.series_id, 'acq': acq})
-        if (s.dim4 == 700) and (('REVERSAL_LEARNING' in s.protocol_name)):
+        elif (s.dim4 == 700) and (('REVERSAL_LEARNING' in s.protocol_name)):
             info[task].append({'item': s.series_id, 'acq': 'revlearnPA'})
-        if (s.dim4 == 1):
-            if ('REST_E' in s.protocol_name):
+        elif (s.dim4 == 1):
+            if 'REST_E' in s.protocol_name and s_next.dim4 == 520:
                 if ('REST_EC' in s.protocol_name):
                     acq = 'eyesclosedPA'
                 elif ('REST_EO_BEFORE' in s.protocol_name):
@@ -60,10 +62,10 @@ def infotodict(seqinfo):
                 elif ('REST_EO_AFTER' in s.protocol_name):
                     acq = 'eyesopenafterPA'
                 info[sbref_rest].append({'item': s.series_id, 'acq': acq})
-            elif ('REVERSAL_LEARNING' in s.protocol_name):
+            elif 'REVERSAL_LEARNING' in s.protocol_name and s_next.dim4 == 700:
                 info[sbref_task].append({'item': s.series_id, 'acq': 'revlearnPA'})
-        if (s.dim4 == 3) and ('SpinEchoFieldMap_PA' in s.protocol_name):
+        elif (s.dim4 == 3) and ('SpinEchoFieldMap_PA' in s.protocol_name):
             info[spinecho_map_bold].append({'item': s.series_id, 'dir': 'PA'})
-        if (s.dim4 == 3) and ('SpinEchoFieldMap_REV_PA' in s.protocol_name):
+        elif (s.dim4 == 3) and ('SpinEchoFieldMap_REV_PA' in s.protocol_name):
             info[spinecho_map_bold].append({'item': s.series_id, 'dir': 'AP'})
     return info

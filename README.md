@@ -1,7 +1,7 @@
 ## BIDS Conversion Scripts
 
 ### Description
-This repository contains scripts that will assist in the conversion of raw DICOM data sets to [BIDS](http://bids.neuroimaging.io/format). Within the heuristics directory are various scripts that have been used to convert data from DICOM to BIDS. This may be helpful to build your own heuristics script. For additional information on how to create a heuristic script see the [heudiconv](https://github.com/nipy/heudiconv) github page.
+This repository contains scripts that will assist in the conversion of raw DICOM data sets to [BIDS](http://bids.neuroimaging.io/format). The "heuristics" folder contains example scripts that have been used to convert data from DICOM to BIDS. **This folder may be helpful to build your own heuristics script.** For additional information on how to create a heuristic script see the [heudiconv](https://github.com/nipy/heudiconv) github page.
 
 
 ### Container Hosting
@@ -40,7 +40,7 @@ optional arguments:
 
 
 ```
-This application must be run with either the "--heuristic" or "--dry_run" argument, it will fail otherwise.
+**This application must be run with either the "--heuristic" or "--dry_run" argument, it will fail otherwise.**
 
 Use the "--dry_run" argument to take a closer look at the acquistion parameters for a scanning session.
 
@@ -51,9 +51,9 @@ singularity run -B /home/timothy/sandbox_DO_NOT_DELETE/BIDS/142_CIFASD_4:/output
 --output_dir /output_dir --dicom_dir /dicom_dir --ses_id 10000 --subj_id 1000 --dry_run
 ```
 This will output a hidden folder (named .heudiconv) along with sub-folders based on arguments provided to "--subj_id" and "--ses_id" respectively.
-Within the sub-folders will be a tsv file that begins with "dicominfo". Based on the example above the path to the file will be ".heudiconv/1000/ses-10000/info/dicominfo_ses-10000.tsv"
+Within the sub-folders will be a tsv file that begins with "dicominfo". **Based on the example above the path to the file will be ".heudiconv/1000/ses-10000/info/dicominfo_ses-10000.tsv"**
 
-Use this tsv file to design the script, heuristics script, used to organize your eventual nifti data. Use a script within the "heuristics" folder of this repository and the heuristics script tutorial ([heuristics tutorial](http://reproducibility.stanford.edu/bids-tutorial-series-part-2a/#heuman3))
+Use this tsv file to design a heuristics script to organize your eventual nifti data. **See this tutorial for a how to on heuristic script creation ([heuristics tutorial](http://reproducibility.stanford.edu/bids-tutorial-series-part-2a/#heuman3))**
 
 
 To run a single participant with heuristic argument:

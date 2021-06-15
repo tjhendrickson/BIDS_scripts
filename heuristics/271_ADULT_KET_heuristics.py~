@@ -1,0 +1,85 @@
+def create_key(template, outtype=('nii.gz','dicom'), annotation_classes=None): #), annotation_classes=None):
+    if template is None or not template:
+        raise ValueError('Template must be a valid format string')
+    return (template, outtype, annotation_classes)
+
+
+def infotodict(seqinfo):
+    import pdb
+    """Heuristic evaluator for determining which runs belong where
+
+    allowed template fields - follow python string module:
+
+    item: index within category
+    subject: participant id
+    seqitem: run number during scanning
+    subindex: sub index within group
+    """
+    t1 = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_T1w')
+
+    task = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-{acq}_run-{item:02d}_bold')
+    sbref_task = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-{acq}_run-{item:02d}_sbref')
+
+    rest = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-rest_run-{item:02d}_bold')
+    sbref_rest = create_key('sub-{subject}/{session}/func/sub-{subject}_{session}_task-rest_run-{item:02d}_sbref')
+
+    dwi = create_key('sub-{subject}/{session}/dwi/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_dwi')
+
+    fieldmap_phase_bold = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_phase1')
+    fieldmap_mag_bold =  create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_acq-{acq}_run-{item:02d}_magnitude1')
+
+    info = {t1: [], task: [], rest: [], dwi: [], fieldmap_mag_bold: [], fieldmap_phase_bold: [], sbref_rest: [], sbref_task: []}
+
+    for idx, s in enumerate(seqinfo):
+        if idx + 1 < len(seqinfo) - 1:
+            s_next = seqinfo[idx+1]
+        if (s.dim3 == 224) and ('T1' in s.series_id):
+            if 'ND' in s.image_type:
+                acq = 'ND'
+                info[t1].append({'item': s.series_id, 'acq': acq})
+            elif 'DIS2D' in s.image_type:
+                acq = 'DIS2D'
+                info[t1].append({'item': s.series_id, 'acq': acq})
+        elif (s.dim4 == 680) and (('REST_PA' in s.protocol_name)):
+            info[rest].append({'item': s.series_id})
+        elif (s.dim4 == 1) and (('REST_PA' in s.protocol_name)):
+            if s_next.dim4 == 680:
+                info[sbref_rest].append({'item': s.series_id})
+        elif (s.dim4 == 100):
+            if 'KET_TASK1_PA' in s.protocol_name:
+                info[task].append({'item': s.series_id, 'acq': 'BED1'})
+            elif 'KET_TASK2_PA' in s.protocol_name:
+                info[task].append({'item': s.series_id, 'acq': 'BED2'})
+            elif 'KET_TASK3_PA' in s.protocol_name:
+                info[task].append({'item': s.series_id, 'acq': 'BED3'})
+            elif 'KET_TASK4_PA' in s.protocol_name:
+                info[task].append({'item': s.series_id, 'acq': 'BED4'})
+        elif (s.dim4 == 137) and ('DKI' in s.protocol_name):
+            if 'PA' in s.protocol_name:
+                acq = '34dirPA'
+                info[dwi].append({'item': s.series_id, 'acq': acq})
+            elif 'AP' in s.protocol_name:
+                acq = '34dirAP'
+                info[dwi].append({'item': s.series_id, 'acq': acq})
+                
+        elif (s.dim4 == 1):
+            if ('KET_TASK1_PA' in s.protocol_name):
+                if s_next.dim4 == 100:
+                    info[sbref_task].append({'item': s.series_id, 'acq':'BED1' })
+            elif ('KET_TASK2_PA' in s.protocol_name):
+                if s_next.dim4 == 100:                
+                    info[sbref_task].append({'item': s.series_id, 'acq': 'BED2'})
+            elif ('KET_TASK3_PA' in s.protocol_name):
+                if s_next.dim4 == 100:
+                    info[sbref_task].append({'item': s.series_id, 'acq': 'BED3' })
+            elif ('KET_TASK4_PA' in s.protocol_name):
+                if s_next.dim4 == 100:
+                    info[sbref_task].append({'item': s.series_id, 'acq': 'BED4'})
+            elif ('FMRI' in s.protocol_name):
+                if 'M' in s.image_type[2]:
+                    acq = 'fMRI'
+                    info[fieldmap_mag_bold].append({'item': s.series_id, 'acq': acq})
+                elif 'P' in s.image_type[2]:
+                    acq = 'fMRI'
+                    info[fieldmap_phase_bold].append({'item': s.series_id,'acq': acq})
+    return info
