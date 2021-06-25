@@ -54,6 +54,7 @@ From: ubuntu:xenial-20210429
 	. /usr/local/miniconda/etc/profile.d/conda.sh && \
 	conda activate heudiconv && \
 	conda install pip && \
+	conda install -c conda-forge dcm2niix && \
 	mkdir github && \
 	cd github && \
 	git clone https://github.com/nipy/heudiconv.git && \
