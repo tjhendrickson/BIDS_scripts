@@ -41,11 +41,11 @@ datalad = args.datalad
 os.system('export TMPDIR='+tmp_dir)
 
 # make bids directory if it does not exist
-if not os.path.exists(os.path.join(output_dir, "BIDS_output")):
-    os.makedirs(os.path.join(output_dir, "BIDS_output"))
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
     
-if os.path.exists(os.path.join(output_dir,"BIDS_output",".heudiconv",subj_id,'ses-'+ses_id)):
-    shutil.rmtree(os.path.join(output_dir,"BIDS_output",".heudiconv",subj_id,'ses-'+ses_id))
+if os.path.exists(os.path.join(output_dir,".heudiconv",subj_id,'ses-'+ses_id)):
+    shutil.rmtree(os.path.join(output_dir,".heudiconv",subj_id,'ses-'+ses_id))
 
 # determine conversion type (i.e. dry run or heuristic)
 if dry_run:
@@ -80,7 +80,7 @@ if subj_id and not ses_id:
                 recursion_pattern = '*/*/*/*'
             elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = 'heudiconv -d %s/*{subject}*/%s -s %s  --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern,  subj_id, output_dir)
+            convert_format = 'heudiconv -d %s/*{subject}*/%s -s %s  --overwrite -o %s' % (dicom_dir, recursion_pattern,  subj_id, output_dir)
     elif len(glob(dicom_dir + "/*" + subj_id + "*")) > 1:
         raise Exception("There are multiple directories within dicom directory: " + dicom_dir + " with the same subject id: " + subj_id + ". Either change the subject id or enter a session id. Must exit.")
     else:
@@ -106,7 +106,7 @@ elif ses_id and not subj_id:
             elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
 
-            convert_format = 'heudiconv -d %s/*{subject}*/%s -s %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, ses_id, output_dir)
+            convert_format = 'heudiconv -d %s/*{subject}*/%s -s %s --overwrite -o %s' % (dicom_dir, recursion_pattern, ses_id, output_dir)
     elif len(glob(dicom_dir + "/*" + ses_id + "*")) > 1:
         raise Exception("There are multiple directories within dicom directory: " + dicom_dir + " with the same subject id: " + ses_id + ". Either change the subject id or enter a session id. Must exit.")
     else:
@@ -131,7 +131,7 @@ elif ses_id and subj_id:
                 recursion_pattern = '*/*/*/*'
             elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = 'heudiconv -d %s/*{subject}*/*{session}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
+            convert_format = 'heudiconv -d %s/*{subject}*/*{session}*/%s -s %s -ss %s --overwrite -o %s' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
     
     elif len(glob(dicom_dir + "/*" + ses_id + "*/*" + subj_id + "*")) == 1:
         if os.path.isdir(glob(dicom_dir + "/*" + ses_id + "*/*" + subj_id + "*")[0]):
@@ -150,7 +150,7 @@ elif ses_id and subj_id:
                 recursion_pattern = '*/*/*/*'
             elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = 'heudiconv -d %s/*{session}*/*{subject}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, ses_id, subj_id, output_dir)
+            convert_format = 'heudiconv -d %s/*{session}*/*{subject}*/%s -s %s -ss %s --overwrite -o %s' % (dicom_dir, recursion_pattern, ses_id, subj_id, output_dir)
     
     elif len(glob(dicom_dir + "/*" + subj_id + "*" + ses_id + "*")) == 1:
         if os.path.isdir(glob(dicom_dir + "/*" + subj_id + "*" + ses_id + "*")[0]):
@@ -169,7 +169,7 @@ elif ses_id and subj_id:
                 recursion_pattern = '*/*/*/*'
             elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = 'heudiconv -d %s/*{subject}*{session}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
+            convert_format = 'heudiconv -d %s/*{subject}*{session}*/%s -s %s -ss %s --overwrite -o %s' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
 
     elif len(glob(dicom_dir + "/*" + ses_id + "*" + subj_id + "*")) == 1:
         if os.path.isdir(glob(dicom_dir + "/*" + ses_id + "*" + subj_id + "*")[0]):
@@ -188,7 +188,7 @@ elif ses_id and subj_id:
                 recursion_pattern = '*/*/*/*'
             elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = 'heudiconv -d %s/*{session}*{subject}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
+            convert_format = 'heudiconv -d %s/*{session}*{subject}*/%s -s %s -ss %s --overwrite -o %s' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
     
     elif len(glob(dicom_dir + "/*" + subj_id + "*")) == 1:
         pdb.set_trace()
@@ -209,7 +209,7 @@ elif ses_id and subj_id:
                 recursion_pattern = '*/*/*/*'
             elif len(matches[0].split(dicom_session_folder  + "/")[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = 'heudiconv -d %s/*{subject}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
+            convert_format = 'heudiconv -d %s/*{subject}*/%s -s %s -ss %s --overwrite -o %s' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
 
     elif len(glob(dicom_dir + "/*" + ses_id + "*")) == 1:
         if os.path.isdir(glob(dicom_dir + "/*" + ses_id + "*")[0]):
@@ -232,7 +232,7 @@ elif ses_id and subj_id:
                 recursion_pattern = '*/*/*/*'
             elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = 'heudiconv -d %s/{subject}/{session}/%s -s %s -ss %s --overwrite -o %s/BIDS_output ' % (tmp_dir, recursion_pattern, subj_id, ses_id, output_dir)
+            convert_format = 'heudiconv -d %s/{subject}/{session}/%s -s %s -ss %s --overwrite -o %s' % (tmp_dir, recursion_pattern, subj_id, ses_id, output_dir)
     
     else:
         raise Exception("Cannot find a directory within dicom directory: " + dicom_dir + " with a combination of subject id: " + subj_id + ", or session id: " + ses_id + ". Must exit.")
@@ -246,4 +246,4 @@ os.system(convert_format + convert_type)
 if not dry_run:
     # Remove alphanumerics within subj_id
     subj_id = re.sub(r'[^a-zA-Z0-9]', "", subj_id)
-    setup(os.path.join(output_dir, "BIDS_output", "sub-"+subj_id))
+    setup(os.path.join(output_dir, "sub-"+subj_id))
