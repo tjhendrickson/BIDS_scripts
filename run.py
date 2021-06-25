@@ -20,7 +20,13 @@ parser.add_argument('--subj_id', help="subject id")
 parser.add_argument('--heuristic', help="Path to heuristic file, if the file is already within the container (i.e. within heuristics folder)"
 										" you do not have to specify a path. ")
 parser.add_argument('--dry_run', action='store_true', help="Dry run. A dicominfo_*.tsv file will generate within .heudiconv/'subj_id'/info directory which can be used to create heuristic script")
-
+parser.add_argument('--datalad',help='Store the entire collection as DataLad dataset(s).'
+                       ' Small files will be committed directly to git, while'
+                        ' large to annex. New version (6) of annex repositories'
+                        ' will be used in a "thin" mode so it would look to'
+                        ' mortals as just any other regular directory (i.e. no'
+                        ' symlinks to under .git/annex). For now just for BIDS'
+                        ' mode.')
 args = parser.parse_args()
 dicom_dir = args.dicom_dir
 tmp_dir = args.tmp_dir
@@ -29,6 +35,7 @@ subj_id = args.subj_id
 heuristic = args.heuristic
 dry_run = args.dry_run
 output_dir = args.output_dir
+datalad = args.datalad
 
 # change temporary dir to different location based on --tmp_dir flag
 os.system('export TMPDIR='+tmp_dir)
@@ -45,11 +52,13 @@ if dry_run:
     convert_type = ' -c none -f convertall'
 else:
     if not heuristic:
-        raise Exception("If a dry_run is not being a conducted a heuristic script must be used. Re-run and place path within --heuristic argument.")
-        sys.exit()
+        raise Exception("If --dry_run is not being a conducted a heuristic script must be used. Re-run and place path within --heuristic argument.")
     else:
         heuristics_script = heuristic
         convert_type = ' -c dcm2niix -f %s -b' % heuristics_script
+
+if datalad:
+    convert_type = convert_type + ' --datalad'
 
 # try to determine how data is organized within dicom directory, place within /tmp directory, and determine what heudiconv format (cross-sectional, longitudinal should look like)
 # just subj_id
@@ -71,7 +80,7 @@ if subj_id and not ses_id:
                 recursion_pattern = '*/*/*/*'
             elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{subject}*/%s -s %s  --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern,  subj_id, output_dir)
+            convert_format = 'heudiconv -d %s/*{subject}*/%s -s %s  --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern,  subj_id, output_dir)
     elif len(glob(dicom_dir + "/*" + subj_id + "*")) > 1:
         raise Exception("There are multiple directories within dicom directory: " + dicom_dir + " with the same subject id: " + subj_id + ". Either change the subject id or enter a session id. Must exit.")
     else:
@@ -97,7 +106,7 @@ elif ses_id and not subj_id:
             elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
 
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{subject}*/%s -s %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, ses_id, output_dir)
+            convert_format = 'heudiconv -d %s/*{subject}*/%s -s %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, ses_id, output_dir)
     elif len(glob(dicom_dir + "/*" + ses_id + "*")) > 1:
         raise Exception("There are multiple directories within dicom directory: " + dicom_dir + " with the same subject id: " + ses_id + ". Either change the subject id or enter a session id. Must exit.")
     else:
@@ -122,7 +131,7 @@ elif ses_id and subj_id:
                 recursion_pattern = '*/*/*/*'
             elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{subject}*/*{session}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
+            convert_format = 'heudiconv -d %s/*{subject}*/*{session}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
     
     elif len(glob(dicom_dir + "/*" + ses_id + "*/*" + subj_id + "*")) == 1:
         if os.path.isdir(glob(dicom_dir + "/*" + ses_id + "*/*" + subj_id + "*")[0]):
@@ -141,7 +150,7 @@ elif ses_id and subj_id:
                 recursion_pattern = '*/*/*/*'
             elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{session}*/*{subject}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, ses_id, subj_id, output_dir)
+            convert_format = 'heudiconv -d %s/*{session}*/*{subject}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, ses_id, subj_id, output_dir)
     
     elif len(glob(dicom_dir + "/*" + subj_id + "*" + ses_id + "*")) == 1:
         if os.path.isdir(glob(dicom_dir + "/*" + subj_id + "*" + ses_id + "*")[0]):
@@ -160,7 +169,7 @@ elif ses_id and subj_id:
                 recursion_pattern = '*/*/*/*'
             elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{subject}*{session}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
+            convert_format = 'heudiconv -d %s/*{subject}*{session}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
 
     elif len(glob(dicom_dir + "/*" + ses_id + "*" + subj_id + "*")) == 1:
         if os.path.isdir(glob(dicom_dir + "/*" + ses_id + "*" + subj_id + "*")[0]):
@@ -179,7 +188,7 @@ elif ses_id and subj_id:
                 recursion_pattern = '*/*/*/*'
             elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{session}*{subject}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
+            convert_format = 'heudiconv -d %s/*{session}*{subject}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
     
     elif len(glob(dicom_dir + "/*" + subj_id + "*")) == 1:
         pdb.set_trace()
@@ -200,7 +209,7 @@ elif ses_id and subj_id:
                 recursion_pattern = '*/*/*/*'
             elif len(matches[0].split(dicom_session_folder  + "/")[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/*{subject}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
+            convert_format = 'heudiconv -d %s/*{subject}*/%s -s %s -ss %s --overwrite -o %s/BIDS_output' % (dicom_dir, recursion_pattern, subj_id, ses_id, output_dir)
 
     elif len(glob(dicom_dir + "/*" + ses_id + "*")) == 1:
         if os.path.isdir(glob(dicom_dir + "/*" + ses_id + "*")[0]):
@@ -223,7 +232,7 @@ elif ses_id and subj_id:
                 recursion_pattern = '*/*/*/*'
             elif len(matches[0].split(dicom_session_folder + '/')[1].split('/')) == 5:
                 recursion_pattern = '*/*/*/*/*'
-            convert_format = '/neurodocker/startup.sh heudiconv -d %s/{subject}/{session}/%s -s %s -ss %s --overwrite -o %s/BIDS_output ' % (tmp_dir, recursion_pattern, subj_id, ses_id, output_dir)
+            convert_format = 'heudiconv -d %s/{subject}/{session}/%s -s %s -ss %s --overwrite -o %s/BIDS_output ' % (tmp_dir, recursion_pattern, subj_id, ses_id, output_dir)
     
     else:
         raise Exception("Cannot find a directory within dicom directory: " + dicom_dir + " with a combination of subject id: " + subj_id + ", or session id: " + ses_id + ". Must exit.")
