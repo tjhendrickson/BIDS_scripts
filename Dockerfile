@@ -20,7 +20,9 @@ ENV PATH="/usr/local/miniconda/bin:$PATH" \
     CPATH="/usr/local/miniconda/include:$CPATH" \
     LANG="C.UTF-8" \
     LC_ALL="C.UTF-8" \
-    PYTHONNOUSERSITE=1
+    PYTHONNOUSERSITE=1 \
+    DEBIAN_FRONTEND=noninteractive \
+    PYTHONPATH=""
 
 # download heudiconv repo
 RUN mkdir github && \
@@ -32,6 +34,8 @@ RUN mkdir github && \
 # create conda environment
 RUN conda create -n heudiconv
 # Install Dependencies
+SHELL ["conda", "run", "-n", "heudiconv", "conda", "install", "pip"]
+SHELL ["conda", "run", "-n", "heudiconv", "conda", "install", "-c", "conda-forge", "datalad"]
 SHELL ["conda", "run", "-n", "heudiconv", "/bin/bash", "-c", "pip", "install", "-r", "requirements.txt"]
 
 COPY run.py /run.py
@@ -43,4 +47,4 @@ RUN mkdir /output_dir && \
     mkdir /tmp_dir && \
     touch /heuristic.py
 
-ENTRYPOINT ["/run.py"]
+ENTRYPOINT ["conda", "run", "-n", "heudiconv", "python", "/run.py"]
